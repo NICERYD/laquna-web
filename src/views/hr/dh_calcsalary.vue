@@ -42,11 +42,11 @@ export default {
             { headerName: "사원명", field: "koreanName", editable: false, minWidth: 60, },
             { headerName: "사업장", field: "estName", editable: false, },
             { headerName: "부서", field: "departmentName", editable: false, },
-            { headerName: "직급", field: "position_code", editable: false, },
+            { headerName: "직급", field: "definedName", editable: false, },
             {
               headerName: '수당',
               children: [
-                { headerName: "기본급", field: "baseSalary", editable: false, },
+                { headerName: "기본급", field: "basicSalary", editable: false, },
                 { headerName: "연차수당", field: "annualAllowance" },
                 { headerName: "연장수당1", field: "overtimeAllowance01" },
                 { headerName: "연장수당2", field: "overtimeAllowance02" },
