@@ -46,20 +46,20 @@ export default {
             {
               headerName: '수당',
               children: [
-                { headerName: "기본급", field: "basicSalary", editable: false, },
-                { headerName: "연차수당", field: "annualAllowance" },
-                { headerName: "연장수당1", field: "overtimeAllowance01" },
-                { headerName: "연장수당2", field: "overtimeAllowance02" },
-                { headerName: "야간수당1", field: "nightAllowance01" },
-                { headerName: "야간수당2", field: "nightAllowance02" },
-                { headerName: "휴일수당1", field: "holidayAllowance01" },
-                { headerName: "휴일수당2", field: "holidayAllowance02" },
-                { headerName: "직책수당", field: "positionAllowance" },
-                { headerName: "기타수당", field: "otherAllowance" },
-                { headerName: "보조금", field: "subsidies" },
-                { headerName: "교통비", field: "transportationExpenses" },
-                { headerName: "식대", field: "mealsExpenses" },
-                { headerName: "지급액계", field: "" },
+                { headerName: "기본급", field: "basicSalary", editable: false, valueFormatter:'Number(value).toLocaleString()', type:'numericColumn'},
+                { headerName: "연차수당", field: "annualAllowance", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn' },
+                { headerName: "연장수당1", field: "overtimeAllowance01", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn'},
+                { headerName: "연장수당2", field: "overtimeAllowance02", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn' },
+                { headerName: "야간수당1", field: "nightAllowance01", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn' },
+                { headerName: "야간수당2", field: "nightAllowance02", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn' },
+                { headerName: "휴일수당1", field: "holidayAllowance01", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn' },
+                { headerName: "휴일수당2", field: "holidayAllowance02", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn' },
+                { headerName: "직책수당", field: "positionAllowance", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn' },
+                { headerName: "기타수당", field: "otherAllowance", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn' },
+                { headerName: "보조금", field: "subsidies", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn' },
+                { headerName: "교통비", field: "transportationExpenses", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn' },
+                { headerName: "식대", field: "mealsExpenses", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn' },
+                { headerName: "지급액계", field: "sum"},
               ],
             },
         ],
@@ -97,7 +97,6 @@ export default {
       }
     }
   },
-
   mounted(){
     this.setSelectBox();
 
@@ -208,7 +207,6 @@ export default {
         })
         .then((res) => {
             if(res.data.success){
-              debugger;
               this.pay_calculate.rowData = res.data.data;
             }else {
               console.log("getCalcSalaryList Fail");
@@ -225,7 +223,6 @@ export default {
 
     openPopup(){
       // this.getEmailRows();
-      // debugger;
       this.dialog = true;
     }
 
