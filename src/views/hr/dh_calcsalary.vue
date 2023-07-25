@@ -59,7 +59,7 @@ export default {
                 { headerName: "보조금", field: "subsidies", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn' },
                 { headerName: "교통비", field: "transportationExpenses", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn' },
                 { headerName: "식대", field: "mealsExpenses", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn' },
-                { headerName: "지급액계", field: "sum"},
+                { headerName: "지급액계", field: "salarySum", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn'},
               ],
             },
         ],
