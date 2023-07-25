@@ -1,0 +1,391 @@
+<script>
+import { AgGridVue } from "ag-grid-vue3";
+import "ag-grid-community/styles//ag-grid.css";
+import "ag-grid-community/styles//ag-theme-balham.css";
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
+
+export default {
+  components: {
+      AgGridVue,
+      VueDatePicker,
+  },
+
+  data(){
+    return{
+      company_store:[],
+      business_store:[],
+      search: {
+        company: "",
+        business: "",
+        yyyymm: "",
+        date: {
+          month: new Date().getMonth(),
+          year: new Date().getFullYear(),
+        },
+      },
+      dateformat: '',
+      pay_calculate: {
+        gridOptions: null,
+        gridApi: null,
+        columnApi: null,
+        defaultColDef: {
+            resizable: true,
+            editable: true,
+            headerClass: "centered",
+            minWidth: 50,
+            width: 100,
+        },
+        columnDefs: [
+            { headerName: "", headerCheckboxSelection: true, checkboxSelection: true, maxWidth: 50, },
+            { headerName: "사원코드", field: "employeeNumber", editable: false, minWidth: 80, },
+            { headerName: "사원명", field: "koreanName", editable: false, minWidth: 60, },
+            { headerName: "사업장", field: "estName", editable: false, },
+            { headerName: "부서", field: "departmentName", editable: false, },
+            { headerName: "직급", field: "position_code", editable: false, },
+            {
+              headerName: '수당',
+              children: [
+                { headerName: "기본급", field: "baseSalary", editable: false, },
+                { headerName: "연차수당", field: "annualAllowance" },
+                { headerName: "연장수당1", field: "overtimeAllowance01" },
+                { headerName: "연장수당2", field: "overtimeAllowance02" },
+                { headerName: "야간수당1", field: "nightAllowance01" },
+                { headerName: "야간수당2", field: "nightAllowance02" },
+                { headerName: "휴일수당1", field: "holidayAllowance01" },
+                { headerName: "휴일수당2", field: "holidayAllowance02" },
+                { headerName: "직책수당", field: "positionAllowance" },
+                { headerName: "기타수당", field: "otherAllowance" },
+                { headerName: "보조금", field: "subsidies" },
+                { headerName: "교통비", field: "transportationExpenses" },
+                { headerName: "식대", field: "mealsExpenses" },
+                { headerName: "지급액계", field: "" },
+              ],
+            },
+        ],
+        rowData: [],
+      },
+
+      dialog: false,
+      selectedRows: [],
+
+      emailSelected: {
+        gridOptions: null,
+        gridApi: null,
+        columnApi: null,
+        defaultColDef: {
+            resizable: true,
+            editable: true,
+            headerClass: "centered",
+        },
+        columnDefs: [
+            { headerName: "", headerCheckboxSelection: true, checkboxSelection: true, maxWidth: 40, minWidth:40, },
+            { headerName: "사원코드", field: "employeeNumber", editable: false, minWidth: 80, },
+            { headerName: "사원명", field: "koreanName", editable: false, minWidth: 60, },
+            { headerName: "사업장", field: "estName", editable: false, },
+            { headerName: "부서", field: "departmentName", editable: false, },
+            { headerName: "직급", field: "position_code", editable: false, },
+            { headerName: "E-mail", field: "email", editable: true, },
+        ],
+        rowData: [
+            { employeeNumber: "D00010", koreanName: "김시드", pay_calculate_type: '연봉제', position_code: '소속1', email: 'abc123@dh.co.kr', },
+            { employeeNumber: "D00020", koreanName: "이시드", pay_calculate_type: '연봉제', position_code: '소속1', email: 'abc123@dh.co.kr', },
+            { employeeNumber: "D00030", koreanName: "박시드", pay_calculate_type: '연봉제', position_code: '소속1', email: 'abc123@dh.co.kr', },
+            { employeeNumber: "D00040", koreanName: "최시드", pay_calculate_type: '시급제', position_code: '소속1', email: 'abc123@dh.co.kr', },
+            { employeeNumber: "D00050", koreanName: "안시드", pay_calculate_type: '시급제', position_code: '소속1', email: 'abc123@dh.co.kr', },
+        ],
+      }
+    }
+  },
+
+  mounted(){
+    this.setSelectBox();
+
+    this.dateformat = (date) => {
+      let month = date.getMonth() + 1;
+      if(month < 10){
+        month = "0" + month;
+      }
+      let year = date.getFullYear();
+      return `${year}/${month}`;
+    };
+  },
+
+  methods: {
+    onGridReady(params){
+      this.pay_calculate.gridApi = params.api;
+      this.pay_calculate.gridColumnApi = params.columnApi;
+      // this.pay_calculate.gridApi.sizeColumnsToFit();
+
+      this.emailSelected.gridApi = params.api;
+      this.emailSelected.gridColumnApi = params.columnApi;
+      this.emailSelected.gridApi.sizeColumnsToFit();
+    },
+
+    setSelectBox(){
+      try{
+        //회사 selectBox
+        this.axios.post("/api/v1/hr/getCompanyList", {
+            headers: {
+                "Content-type": "application/json",
+            },
+        })
+        .then((res) => {
+            if(res.data.success){
+              this.company_store = res.data.data;
+              this.search.company = this.company_store[0];
+            }else {
+                console.log("getCompanyList Fail");
+            }
+        });
+
+        //사업장 selectBox
+        this.axios.post("/api/v1/hr/getBusinessList", {
+            headers: {
+                "Content-type": "application/json",
+            },
+        })
+        .then((res) => {
+            if(res.data.success){
+              this.business_store = res.data.data;
+              this.search.business = this.business_store[0];
+            }else {
+                console.log("getBusinessList Fail");
+            }
+        });
+      }catch(err){
+          console.log(err.message);
+      }
+    },
+
+    setDateFormat(){
+      if(this.search.date.month < 9){
+        this.search.yyyymm = this.search.date.year + "0" + (this.search.date.month+1);
+      }else if(this.search.date.month >= 9){
+        this.search.yyyymm = this.search.date.year + "" + (this.search.date.month+1);
+      }
+    },
+
+    getBasicSalaryData(){
+      this.setDateFormat();
+      let sendData = {
+        companyId: this.search.company.value,
+        estId: this.search.business.value,
+        yyyymm: this.search.yyyymm
+      };
+      try{
+        this.loading = true;
+        this.axios.post("/api/v1/hr/erpiu/getBasicSalaryData", sendData, {
+            headers: {
+                "Content-type": "application/json",
+            },
+        })
+        .then((res) => {
+            if(res.data.success){
+              console.log(res.data.message);
+            }else {
+              console.log("getBasicSalaryData Fail");
+            }
+        });
+      }catch(err){
+          console.log(err.message);
+      }
+    },
+
+    getSearchList(){
+      this.setDateFormat();
+      let sendData = {
+        companyId: this.search.company.value,
+        estId: this.search.business.value,
+        yyyymm: this.search.yyyymm
+      };
+      try{
+        this.loading = true;
+        this.axios.post("/api/v1/hr/getCalcSalaryList", sendData, {
+            headers: {
+                "Content-type": "application/json",
+            },
+        })
+        .then((res) => {
+            if(res.data.success){
+              debugger;
+              this.pay_calculate.rowData = res.data.data;
+            }else {
+              console.log("getCalcSalaryList Fail");
+            }
+        });
+      }catch(err){
+          console.log(err.message);
+      }
+    },
+
+    getEmailRows(){
+      this.selectedRows = this.pay_calculate.gridApi.getSelectedRows();
+    },
+
+    openPopup(){
+      // this.getEmailRows();
+      // debugger;
+      this.dialog = true;
+    }
+
+  },
+}
+</script>
+
+<template>
+  <v-container>
+    <div class="d-flex align-center mb-7">
+        <div class="bg-primary-lighten-5 px-3 py-2 rounded me-3">
+          <i class="tio- text-primary text-18">money</i>
+        </div>
+        <div class="text-subtitle-2 f-600">급여 계산</div>
+    </div>
+    <v-row>
+      <v-col cols="12">
+        <v-row class="align-center mb-2">
+          <v-col cols="3">
+            <v-select
+              class="mw-200 px-3"
+              label="회사"
+              variant="outlined"
+              :items="company_store"
+              item-title="name"
+              item-value="value"
+              v-model="search.company"
+              return-object
+              hide-details="">
+            </v-select>
+          </v-col>
+          <v-col cols="3">
+            <v-select
+              class="mw-200 px-3"
+              label="사업장"
+              variant="outlined"
+              :items="business_store"
+              item-title="name"
+              item-value="value"
+              v-model="search.business"
+              return-object
+              hide-details="">
+            </v-select>
+          </v-col>
+          <v-col cols="3">
+            <VueDatePicker
+              class="v-input__control"
+              v-model="search.date"
+              :format="dateformat"
+              month-picker>
+            </VueDatePicker>
+          </v-col>
+          <v-col>
+            <v-btn color="primary" flat class="px-3 ma-3" @click="getSearchList">
+              조회
+            </v-btn>
+            <v-btn color="primary" flat class="px-3" @click="getBasicSalaryData">
+              급여항목가져오기
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
+    <!-- 구분선 --><hr class="my-5">
+    <v-row>
+      <v-col cols="4" class="mx-7"></v-col>
+      <v-col cols="1">
+          <v-btn color="primary" flat>급여 계산</v-btn>         
+      </v-col>
+      <v-col cols="2">
+          <v-btn color="primary" flat>엑셀다운로드<br>(ERP IU 업로드)</v-btn>
+      </v-col>
+      <v-col cols="2">
+          <v-btn color="primary" flat>세금계산 내역 가져오기</v-btn>
+      </v-col>
+      <v-col cols="2">
+          <v-btn color="primary" flat @click="openPopup">급여명세서 E-mail 전송</v-btn>
+      </v-col>
+    </v-row>
+    <v-row class="grid-wrap">
+      <v-col cols="12">
+        <!--pay_calculate table-->
+        <ag-grid-vue
+        style="height: 300px"
+        class="ag-theme-balham"
+        :columnDefs="pay_calculate.columnDefs"
+        :defaultColDef="pay_calculate.defaultColDef" 
+        :rowData="pay_calculate.rowData"
+        rowSelection="multiple"
+        @grid-ready="onGridReady"
+        >
+        </ag-grid-vue>
+      </v-col>
+    </v-row>
+    <!--E-mail 전송 팝업창-->
+    <v-dialog
+      v-model="dialog"
+      persistent
+      width="800"
+    >
+      <v-card>
+        <v-card-title>
+          <span class="text-title f-600">급여명세서 E-mail 전송</span>
+        </v-card-title>
+        <v-card-text>
+          <!--emailSelected table-->
+          <ag-grid-vue
+            style="height: 250px"
+            class="ag-theme-balham"
+            :columnDefs="emailSelected.columnDefs"
+            :defaultColDef="emailSelected.defaultColDef" 
+            :rowData="emailSelected.rowData"
+            rowSelection="multiple"
+            @grid-ready="onGridReady"
+          >
+          </ag-grid-vue>
+          <v-alert v-if="popupErrMsg"
+            color="error"
+            theme="dark"
+            border="start"
+            prominent
+            class="mw-700 mx-auto ma-1"
+          >
+            <i class="tio- text-18 me-2"> error_outlined </i>
+            {{ popupErrMsg }}
+          </v-alert>
+        </v-card-text>
+        <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn
+            color="blue-darken-1"
+            variant="text"
+            @click="dialog = false"
+        >
+            Close
+        </v-btn>
+        <v-btn
+            color="blue-darken-1"
+            variant="text"
+        >
+            Send
+        </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-container>
+</template>
+
+<style lang="scss" scoped>
+.centered {
+  .ag-header-cell-label {
+    justify-content: center !important;
+  }
+}
+.ag-row {
+  .centered {
+    justify-content: center !important;
+    text-align: center;
+  }
+}
+
+</style>
+
