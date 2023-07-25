@@ -1,1 +1,0 @@
-import{_ as a,B as n,D as r,E as s,F as e}from"./index.72a7fa6d.js";import{V as o}from"./VContainer.9865dee0.js";const t={},d=e("h1",null,"Drag and drop",-1);const f=a(t,[["render",function(a,e){return n(),r(o,null,{default:s((()=>[d])),_:1})}]]);export{f as default};
