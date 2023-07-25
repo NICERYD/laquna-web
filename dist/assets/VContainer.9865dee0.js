@@ -1,0 +1,1 @@
+import{p as s,m as a,a as t,g as e,u as l,f as n,h as o}from"./index.72a7fa6d.js";const r=s({fluid:{type:Boolean,default:!1},...a(),...t()},"v-container"),i=e()({name:"VContainer",props:r(),setup(s,a){let{slots:t}=a;const{rtlClasses:e}=l();return n((()=>o(s.tag,{class:["v-container",{"v-container--fluid":s.fluid},e.value,s.class],style:s.style},t))),{}}});export{i as V};
