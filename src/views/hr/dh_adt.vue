@@ -445,7 +445,7 @@ export default {
         <v-col cols="12">
             <!--adt table-->
             <ag-grid-vue
-            style="height: 300px"
+            style="height: 700px"
             class="ag-theme-balham"
             :columnDefs="adt.columnDefs"
             :defaultColDef="adt.defaultColDef" 

@@ -13,6 +13,8 @@ export default {
 
   data(){
     return{
+      loading: false,
+      success: false,
       company_store:[],
       business_store:[],
       search: {
@@ -40,7 +42,7 @@ export default {
             { headerName: "", headerCheckboxSelection: true, checkboxSelection: true, maxWidth: 50, },
             { headerName: "사원코드", field: "employeeNumber", editable: false, minWidth: 80, },
             { headerName: "사원명", field: "koreanName", editable: false, minWidth: 60, },
-            { headerName: "사업장", field: "estName", editable: false, },
+            { headerName: "사업장", field: "estName", editable: false, minWidth: 90, },
             { headerName: "부서", field: "departmentName", editable: false, },
             { headerName: "직급", field: "definedName", editable: false, },
             {
@@ -82,18 +84,12 @@ export default {
             { headerName: "", headerCheckboxSelection: true, checkboxSelection: true, maxWidth: 40, minWidth:40, },
             { headerName: "사원코드", field: "employeeNumber", editable: false, minWidth: 80, },
             { headerName: "사원명", field: "koreanName", editable: false, minWidth: 60, },
-            { headerName: "사업장", field: "estName", editable: false, },
+            { headerName: "사업장", field: "estName", editable: false, minWidth: 90, },
             { headerName: "부서", field: "departmentName", editable: false, },
-            { headerName: "직급", field: "position_code", editable: false, },
+            { headerName: "직급", field: "definedName", editable: false, },
             { headerName: "E-mail", field: "email", editable: true, },
         ],
-        rowData: [
-            { employeeNumber: "D00010", koreanName: "김시드", pay_calculate_type: '연봉제', position_code: '소속1', email: 'abc123@dh.co.kr', },
-            { employeeNumber: "D00020", koreanName: "이시드", pay_calculate_type: '연봉제', position_code: '소속1', email: 'abc123@dh.co.kr', },
-            { employeeNumber: "D00030", koreanName: "박시드", pay_calculate_type: '연봉제', position_code: '소속1', email: 'abc123@dh.co.kr', },
-            { employeeNumber: "D00040", koreanName: "최시드", pay_calculate_type: '시급제', position_code: '소속1', email: 'abc123@dh.co.kr', },
-            { employeeNumber: "D00050", koreanName: "안시드", pay_calculate_type: '시급제', position_code: '소속1', email: 'abc123@dh.co.kr', },
-        ],
+        rowData: [],
       }
     }
   },
@@ -116,9 +112,9 @@ export default {
       this.pay_calculate.gridColumnApi = params.columnApi;
       // this.pay_calculate.gridApi.sizeColumnsToFit();
 
-      this.emailSelected.gridApi = params.api;
-      this.emailSelected.gridColumnApi = params.columnApi;
-      this.emailSelected.gridApi.sizeColumnsToFit();
+      // this.emailSelected.gridApi = params.api;
+      // this.emailSelected.gridColumnApi = params.columnApi;
+      // this.emailSelected.gridApi.sizeColumnsToFit();
     },
 
     setSelectBox(){
@@ -181,6 +177,8 @@ export default {
         })
         .then((res) => {
             if(res.data.success){
+              this.loading = false;
+              this.success = true;
               console.log(res.data.message);
             }else {
               console.log("getBasicSalaryData Fail");
@@ -207,6 +205,7 @@ export default {
         })
         .then((res) => {
             if(res.data.success){
+              this.loading = false;
               this.pay_calculate.rowData = res.data.data;
             }else {
               console.log("getCalcSalaryList Fail");
@@ -217,13 +216,49 @@ export default {
       }
     },
 
-    getEmailRows(){
-      this.selectedRows = this.pay_calculate.gridApi.getSelectedRows();
+    downloadSalaryExcel(){
+      this.setDateFormat();
+      let sendData = {
+        companyId: this.search.company.value,
+        estId: this.search.business.value,
+        yyyymm: this.search.yyyymm
+      };
+      try{
+        this.loading = true;
+        this.axios.post("/api/v1/hr/downloadSalaryExcel", sendData, {
+            headers: {
+                "Content-type": "application/json",
+            },
+        })
+        .then((res) => {
+            if(res.data.success){
+              this.loading = false;
+              this.success = true;
+            }else {
+              console.log("getCalcSalaryList Fail");
+            }
+        });
+      }catch(err){
+          console.log(err.message);
+      }
+    },
+
+
+    getSelectedRows() {
+      // debugger;
+        let selectedNodes = this.pay_calculate.gridApi.getSelectedNodes();
+        let selectedData = selectedNodes.map( node => node.data );
+        this.emailSelected.rowData = selectedData;
     },
 
     openPopup(){
-      // this.getEmailRows();
+      this.getSelectedRows();
       this.dialog = true;
+    },
+
+    closePopup(){
+      this.dialog = false;
+      this.emailSelected.rowData = [];
     }
 
   },
@@ -232,6 +267,25 @@ export default {
 
 <template>
   <v-container>
+    <v-overlay
+      class="align-center justify-center"
+      persistent
+      v-model="loading"
+      >
+      <v-progress-circular
+        color="primary"
+        indeterminate
+        :size="100"
+        :width="12"
+      ></v-progress-circular>
+    </v-overlay>
+    <v-overlay
+      class="align-center justify-center"
+      v-model="success"
+      >
+      <v-alert color="primary" text="작업 완료되었습니다." >
+      </v-alert>
+    </v-overlay>
     <div class="d-flex align-center mb-7">
         <div class="bg-primary-lighten-5 px-3 py-2 rounded me-3">
           <i class="tio- text-primary text-18">money</i>
@@ -293,7 +347,7 @@ export default {
           <v-btn color="primary" flat>급여 계산</v-btn>         
       </v-col>
       <v-col cols="2">
-          <v-btn color="primary" flat>엑셀다운로드<br>(ERP IU 업로드)</v-btn>
+          <v-btn color="primary" flat @click="downloadSalaryExcel">엑셀다운로드<br>(ERP IU 업로드용)</v-btn>
       </v-col>
       <v-col cols="2">
           <v-btn color="primary" flat>세금계산 내역 가져오기</v-btn>
@@ -306,13 +360,13 @@ export default {
       <v-col cols="12">
         <!--pay_calculate table-->
         <ag-grid-vue
-        style="height: 300px"
+        style="height: 700px"
         class="ag-theme-balham"
         :columnDefs="pay_calculate.columnDefs"
         :defaultColDef="pay_calculate.defaultColDef" 
         :rowData="pay_calculate.rowData"
         rowSelection="multiple"
-        @grid-ready="onGridReady"
+        @gridReady="onGridReady"
         >
         </ag-grid-vue>
       </v-col>
@@ -355,7 +409,7 @@ export default {
         <v-btn
             color="blue-darken-1"
             variant="text"
-            @click="dialog = false"
+            @click="closePopup"
         >
             Close
         </v-btn>
