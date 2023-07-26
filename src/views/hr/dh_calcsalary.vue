@@ -15,6 +15,8 @@ export default {
     return{
       loading: false,
       success: false,
+      error: false,
+      errMsg: "",
       company_store:[],
       business_store:[],
       search: {
@@ -107,14 +109,15 @@ export default {
   },
 
   methods: {
-    onGridReady(params){
+    onPayGridReady(params){
       this.pay_calculate.gridApi = params.api;
-      this.pay_calculate.gridColumnApi = params.columnApi;
-      // this.pay_calculate.gridApi.sizeColumnsToFit();
+      this.pay_calculate.columnApi = params.columnApi;
+    },
 
-      // this.emailSelected.gridApi = params.api;
-      // this.emailSelected.gridColumnApi = params.columnApi;
-      // this.emailSelected.gridApi.sizeColumnsToFit();
+    onEmailGridReady(params){
+      this.emailSelected.gridApi = params.api;
+      this.emailSelected.columnApi = params.columnApi;
+      this.emailSelected.gridApi.sizeColumnsToFit();
     },
 
     setSelectBox(){
@@ -245,15 +248,26 @@ export default {
 
 
     getSelectedRows() {
-      // debugger;
         let selectedNodes = this.pay_calculate.gridApi.getSelectedNodes();
-        let selectedData = selectedNodes.map( node => node.data );
-        this.emailSelected.rowData = selectedData;
+        if(selectedNodes.length != 0){
+          let selectedData = selectedNodes.map( node => node.data );
+          this.emailSelected.rowData = selectedData;
+          return true;
+        }else{
+          return false;
+        }
+        
     },
 
     openPopup(){
-      this.getSelectedRows();
-      this.dialog = true;
+      if(this.getSelectedRows()){
+        this.errMsg = ""
+        this.dialog = true;
+      }else{
+        this.error = true;
+        this.errMsg = "선택한 사원이 없습니다.";
+      }
+      
     },
 
     closePopup(){
@@ -284,6 +298,13 @@ export default {
       v-model="success"
       >
       <v-alert color="primary" text="작업 완료되었습니다." >
+      </v-alert>
+    </v-overlay>
+    <v-overlay
+      class="align-center justify-center"
+      v-model="error"
+      >
+      <v-alert color="error" :text= errMsg >
       </v-alert>
     </v-overlay>
     <div class="d-flex align-center mb-7">
@@ -356,6 +377,21 @@ export default {
           <v-btn color="primary" flat @click="openPopup">급여명세서 E-mail 전송</v-btn>
       </v-col>
     </v-row>
+    <!-- <v-row v-if="errMsg">
+      <v-col cols="6" class="mx-7"></v-col>
+      <v-col cols="5">
+        <v-alert
+          color="error"
+          theme="dark"
+          border="start"
+          prominent
+          class="mw-700 mx-auto"
+        >
+          <i class="tio- text-18 me-2"> error_outlined </i>
+          {{ errMsg }}
+        </v-alert>
+      </v-col>
+    </v-row> -->
     <v-row class="grid-wrap">
       <v-col cols="12">
         <!--pay_calculate table-->
@@ -366,7 +402,7 @@ export default {
         :defaultColDef="pay_calculate.defaultColDef" 
         :rowData="pay_calculate.rowData"
         rowSelection="multiple"
-        @gridReady="onGridReady"
+        @grid-ready="onPayGridReady"
         >
         </ag-grid-vue>
       </v-col>
@@ -390,7 +426,7 @@ export default {
             :defaultColDef="emailSelected.defaultColDef" 
             :rowData="emailSelected.rowData"
             rowSelection="multiple"
-            @grid-ready="onGridReady"
+            @grid-ready="onEmailGridReady"
           >
           </ag-grid-vue>
           <v-alert v-if="popupErrMsg"
