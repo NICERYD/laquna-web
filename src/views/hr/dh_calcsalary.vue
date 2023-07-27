@@ -219,6 +219,33 @@ export default {
       }
     },
 
+    calcSalary(){
+      this.setDateFormat();
+      let sendData = {
+        companyId: this.search.company.value,
+        estId: this.search.business.value,
+        yyyymm: this.search.yyyymm
+      };
+      try{
+        this.loading = true;
+        this.axios.post("/api/v1/hr/calcSalary", sendData, {
+            headers: {
+                "Content-type": "application/json",
+            },
+        })
+        .then((res) => {
+            if(res.data.success){
+              this.loading = false;
+              this.success = true;
+            }else {
+              console.log("getCalcSalaryList Fail");
+            }
+        });
+      }catch(err){
+          console.log(err.message);
+      }
+    },
+
     downloadSalaryExcel(){
       this.setDateFormat();
       let sendData = {
@@ -365,7 +392,7 @@ export default {
     <v-row>
       <v-col cols="4" class="mx-7"></v-col>
       <v-col cols="1">
-          <v-btn color="primary" flat>급여 계산</v-btn>         
+          <v-btn color="primary" flat @click="calcSalary">급여 계산</v-btn>         
       </v-col>
       <v-col cols="2">
           <v-btn color="primary" flat @click="downloadSalaryExcel">엑셀다운로드<br>(ERP IU 업로드용)</v-btn>

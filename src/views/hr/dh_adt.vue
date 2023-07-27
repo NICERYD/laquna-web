@@ -61,7 +61,7 @@ export default {
             { headerName: "퇴근판정", field: "outStatus",  },
             { headerName: "외출", field: "outTime" },
             { headerName: "지각", field: "lateTime" },
-            { headerName: "연장근무시간", field: "extensionTime" },
+            { headerName: "연장근무시간", field: "overTime" },
             { headerName: "야간근무시간", field: "nightTime" },
             { headerName: "휴일", field: "holidayTime" },
             { headerName: "정상근무시간", field: "defaultTime" },
