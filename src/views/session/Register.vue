@@ -3,6 +3,7 @@
 export default {
   data(){
     return {
+      success: false,
       formData: {
         emailId: "",
         password: "",
@@ -97,8 +98,7 @@ export default {
           })
           .then((res) => {
             if (res.data.code == "200") {
-              console.log("회원가입 성공");
-              alert(res.data.message);
+              this.success = true;
               this.$router.push('Signin');
             }else {
               console.log("실패");
@@ -107,7 +107,6 @@ export default {
           });
         } catch(err){
           this.errMsg = "Register Fail"
-          alert(err.message);
         }
       }
     },
@@ -118,6 +117,13 @@ export default {
 
 
 <template>
+  <v-overlay
+      class="align-center justify-center"
+      v-model="success"
+      >
+      <v-alert color="primary" text="회원가입이 완료되었습니다." >
+      </v-alert>
+    </v-overlay>
   <v-row>
     <v-col
       cols="12"
