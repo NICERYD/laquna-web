@@ -354,6 +354,7 @@ export default {
                   class="v-input__control"
                   v-model="search.date"
                   :format="dateformat"
+                  mode-height="190"
                   month-picker>
                 </VueDatePicker>
               </v-col>
