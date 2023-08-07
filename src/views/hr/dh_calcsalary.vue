@@ -118,6 +118,9 @@ export default {
       this.emailSelected.gridApi = params.api;
       this.emailSelected.columnApi = params.columnApi;
       this.emailSelected.gridApi.sizeColumnsToFit();
+      this.emailSelected.gridApi.forEachNode(node => {
+        node.setSelected(true);
+      });
     },
 
     setSelectBox(){
