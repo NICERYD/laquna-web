@@ -433,7 +433,7 @@ export default {
 
         <!-- 구분선 --><hr class="my-5">
         <v-row class="grid-wrap">
-            <v-col cols="4">
+            <v-col cols="4" class="my-5">
                 <!--fnd_code table-->
                 <ag-grid-vue
                 style="width: 100%; height: 650px"
@@ -449,7 +449,7 @@ export default {
                 >
                 </ag-grid-vue>
             </v-col>
-            <v-col>
+            <v-col cols="8">
                 <v-row class="ma-5">
                     <!--fnd_code_detail table SYS-->
                     <ag-grid-vue
@@ -463,7 +463,7 @@ export default {
                     </ag-grid-vue>
                     
                 </v-row>
-                <v-row class="mx-5" v-if="!fnd_code_detail_com.defaultColDef.editable">
+                <v-row class="mx-3" v-if="!fnd_code_detail_com.defaultColDef.editable">
                     <v-col cols="6"></v-col>
                     <v-col cols="2">
                         <v-btn color="primary" flat @click="openPopup('add')" width="100" height="40">
@@ -494,7 +494,7 @@ export default {
                         </v-btn>
                     </v-col>
                 </v-row> -->
-                <v-row class="mx-5">
+                <v-row class="mx-5 py-1">
                     <v-alert v-if="errMsg"
                         color="error"
                         theme="dark"
