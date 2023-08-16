@@ -393,7 +393,7 @@ export default {
             <div class="bg-primary-lighten-5 px-3 py-2 rounded me-3 d-inline-block">
                 <i class="tio- text-primary text-18">shopping</i>
             </div>
-            <div class="text-subtitle-2 f-600">코드 관리</div>
+            <div class="text-20 f-600">코드 관리</div>
         </div>
         <v-row class="align-center mb-2">
             <v-col cols="5">
@@ -424,9 +424,9 @@ export default {
                     @keyup.enter="getSearchList"
                 ></v-text-field>
             </v-col>
-            <v-col cols="2">
-                <v-btn color="primary" flat class="grid-btn-wrap" @click="getSearchList">
-                조회
+            <v-col cols="2" class="pr-36">
+                <v-btn color="primary" flat class="grid-btn-wrap" width="100" height="40" @click="getSearchList">
+                    <span class="text-20">조회</span>
                 </v-btn>
             </v-col>
         </v-row>
@@ -463,22 +463,21 @@ export default {
                     </ag-grid-vue>
                     
                 </v-row>
-                <v-row v-if="!fnd_code_detail_com.defaultColDef.editable">
-                    <v-col cols="5" class="mx-7"></v-col>
+                <v-row class="mx-5" v-if="!fnd_code_detail_com.defaultColDef.editable">
+                    <v-col cols="6"></v-col>
                     <v-col cols="2">
-                        <v-btn color="primary" flat @click="openPopup('add')">
-                            <i class="tio- text-18 me-2">add</i>추가
-                        </v-btn>         
-                    </v-col>
+                        <v-btn color="primary" flat @click="openPopup('add')" width="100" height="40">
+                            <i class="tio- text-20 me-2">add</i><span class="text-20">추가</span>
+                        </v-btn> 
+                    </v-col>      
                     <v-col cols="2">
-                        <!-- <v-btn color="primary" flat @click="fnd_code_detail_com.defaultColDef.editable=true"> -->
-                        <v-btn color="primary" flat @click="openPopup('modify')">
-                            <i class="tio- text-18 me-2">edit</i>수정
-                        </v-btn>
-                    </v-col>
+                        <v-btn color="primary" flat @click="openPopup('modify')" width="100" height="40">
+                            <i class="tio- text-20 me-2">edit</i><span class="text-20">수정</span>
+                        </v-btn> 
+                    </v-col>               
                     <v-col cols="2">
-                        <v-btn color="error" flat @click="deleteCodeDetailCom">
-                            <i class="tio- text-18 me-2">delete</i>삭제
+                        <v-btn color="error" flat @click="deleteCodeDetailCom" width="100" height="40">
+                            <i class="tio- text-20 me-2">delete</i><span class="text-20">삭제</span>
                         </v-btn>
                     </v-col>
                 </v-row>
@@ -651,6 +650,9 @@ export default {
 
 .grid-btn-wrap {
     float: right;
+}
+.pr-36 {
+    padding-right: 36px !important;
 }
 .close-search {
     width: 18px;
