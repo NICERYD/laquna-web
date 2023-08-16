@@ -481,4 +481,9 @@ export default {
     }
   }
 
+.grid-wrap {
+    flex-wrap: nowrap;
+    width: 100%;
+}
+
 </style>

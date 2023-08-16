@@ -15,6 +15,7 @@ export default {
     return{
       loading: false,
       success: false,
+      successMsg: "",
       error: false,
       errMsg: "",
       company_store:[],
@@ -184,6 +185,7 @@ export default {
         .then((res) => {
             if(res.data.success){
               this.loading = false;
+              this.successMsg = "급여항목가져오기 완료";
               this.success = true;
               console.log(res.data.message);
             }else {
@@ -239,6 +241,7 @@ export default {
         .then((res) => {
             if(res.data.success){
               this.loading = false;
+              this.successMsg = "급여계산 완료";
               this.success = true;
             }else {
               console.log("getCalcSalaryList Fail");
@@ -266,6 +269,7 @@ export default {
         .then((res) => {
             if(res.data.success){
               this.loading = false;
+              this.successMsg = "엑셀 다운로드 완료";
               this.success = true;
             }else {
               console.log("getCalcSalaryList Fail");
@@ -303,7 +307,35 @@ export default {
     closePopup(){
       this.dialog = false;
       this.emailSelected.rowData = [];
-    }
+    },
+
+    downloadPayroll(){
+      this.setDateFormat();
+      let sendData = {
+        companyId: this.search.company.value,
+        estId: this.search.business.value,
+        yyyymm: this.search.yyyymm
+      };
+      try{
+        this.loading = true;
+        this.axios.post("/api/v1/hr/payrollReport", sendData, {
+            headers: {
+                "Content-type": "application/json",
+            },
+        })
+        .then((res) => {
+            if(res.data.success){
+              this.loading = false;
+              this.successMsg = "급여대장 다운로드 완료";
+              this.success = true;
+            }else {
+              console.log("getpayrollReport Fail");
+            }
+        });
+      }catch(err){
+          console.log(err.message);
+      }
+    },
 
   },
 }
@@ -327,7 +359,7 @@ export default {
       class="align-center justify-center"
       v-model="success"
       >
-      <v-alert color="primary" text="작업 완료되었습니다." >
+      <v-alert color="primary" :text= successMsg >
       </v-alert>
     </v-overlay>
     <v-overlay
@@ -393,18 +425,18 @@ export default {
       </v-col>
     </v-row>
     <!-- 구분선 --><hr class="my-5">
-    <v-row>
-      <v-col cols="4" class="mx-7"></v-col>
-      <v-col cols="1">
+    <v-row class="btn-right">
+      <v-col cols="1"></v-col>
+      <v-col cols="2">
           <v-btn color="primary" flat @click="calcSalary">급여 계산</v-btn>         
       </v-col>
-      <v-col cols="2">
+      <v-col cols="3">
           <v-btn color="primary" flat @click="downloadSalaryExcel">엑셀다운로드<br>(ERP IU 업로드용)</v-btn>
       </v-col>
-      <v-col cols="2">
+      <v-col cols="3">
           <v-btn color="primary" flat>세금계산 내역 가져오기</v-btn>
       </v-col>
-      <v-col cols="2">
+      <v-col cols="3">
           <v-btn color="primary" flat @click="openPopup">급여명세서 E-mail 전송</v-btn>
       </v-col>
     </v-row>
@@ -436,6 +468,20 @@ export default {
         @grid-ready="onPayGridReady"
         >
         </ag-grid-vue>
+      </v-col>
+    </v-row>
+    <v-row class="btn-right">
+      <v-col cols="3">
+        <v-btn color="primary" flat>급여표(6쪽)</v-btn>
+      </v-col>
+      <v-col cols="3">
+        <v-btn color="primary" flat @click="downloadPayroll">급여대장</v-btn>
+      </v-col>
+      <v-col cols="3">
+        <v-btn color="primary" flat >급여명세서</v-btn>
+      </v-col>
+      <v-col cols="3">
+        <v-btn color="primary" flat>개인급여내역</v-btn>
       </v-col>
     </v-row>
     <!--E-mail 전송 팝업창-->
@@ -503,6 +549,15 @@ export default {
     justify-content: center !important;
     text-align: center;
   }
+}
+
+.btn-right{
+  float: right;
+}
+
+.grid-wrap {
+    flex-wrap: nowrap;
+    width: 100%;
 }
 
 </style>

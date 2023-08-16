@@ -70,12 +70,12 @@ export default {
         setSearchTerm(e) {
             
             if(e.type == 'keyup'){
-                let keword = e.target.value;
-                keword = keword.trim();
-                keword = keword.toUpperCase();
+                let keyword = e.target.value;
+                keyword = keyword.trim();
+                keyword = keyword.toUpperCase();
 
                 for(let index in this.rowData){
-                    if(this.rowData[index].moduleName == keword || this.rowData[index].description == keword){
+                    if(this.rowData[index].moduleName == keyword || this.rowData[index].description == keyword){
                         this.errMsg ="";
                         this.inputdata = this.rowData[index].description;
                         this.$emit("update:searchTerm", this.rowData[index].description);
