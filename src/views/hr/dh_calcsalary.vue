@@ -371,9 +371,9 @@ export default {
     </v-overlay>
     <div class="d-flex align-center mb-7">
         <div class="bg-primary-lighten-5 px-3 py-2 rounded me-3">
-          <i class="tio- text-primary text-18">money</i>
+          <i class="tio- text-primary text-20">money</i>
         </div>
-        <div class="text-subtitle-2 f-600">급여 계산</div>
+        <div class="text-20 f-600">급여 계산</div>
     </div>
     <v-row>
       <v-col cols="12">
@@ -404,7 +404,7 @@ export default {
               hide-details="">
             </v-select>
           </v-col>
-          <v-col cols="3">
+          <v-col cols="2">
             <VueDatePicker
               class="v-input__control"
               v-model="search.date"
@@ -413,31 +413,37 @@ export default {
               month-picker>
             </VueDatePicker>
           </v-col>
-          <v-col>
-            <v-btn color="primary" flat class="px-3 ma-3" @click="getSearchList">
-              조회
+          <v-col cols="4">
+            <div class="btn-right pr-5">
+              <v-btn color="primary" flat class="px-3 ma-3" width="100" height="40" @click="getSearchList">
+              <span class="text-20">조회</span>
             </v-btn>
-            <v-btn color="primary" flat class="px-3" @click="getBasicSalaryData">
-              급여항목가져오기
+            <v-btn color="primary" flat class="px-3" width="200" height="40" @click="getBasicSalaryData">
+              <span class="text-20">급여항목가져오기</span>
             </v-btn>
+            </div>
           </v-col>
         </v-row>
       </v-col>
     </v-row>
     <!-- 구분선 --><hr class="my-5">
-    <v-row class="btn-right">
-      <v-col cols="1"></v-col>
+    <v-row>
+      <v-col cols="4"></v-col>
       <v-col cols="2">
-          <v-btn color="primary" flat @click="calcSalary">급여 계산</v-btn>         
+          <v-btn color="primary" flat @click="calcSalary" width="150" height="40">
+            <span class="text-16">급여계산</span></v-btn>         
       </v-col>
-      <v-col cols="3">
-          <v-btn color="primary" flat @click="downloadSalaryExcel">엑셀다운로드<br>(ERP IU 업로드용)</v-btn>
+      <v-col cols="2">
+          <v-btn color="primary" flat @click="downloadSalaryExcel" width="150" height="40">
+            <span class="text-16">ERP IU 업로드</span></v-btn>
       </v-col>
-      <v-col cols="3">
-          <v-btn color="primary" flat>세금계산 내역 가져오기</v-btn>
+      <v-col cols="2">
+          <v-btn color="primary" flat width="150" height="40">
+            <span class="text-16">세금가져오기</span></v-btn>
       </v-col>
-      <v-col cols="3">
-          <v-btn color="primary" flat @click="openPopup">급여명세서 E-mail 전송</v-btn>
+      <v-col cols="2">
+          <v-btn color="primary" flat @click="openPopup" width="150" height="40">
+            <span class="text-16">급여 이메일전송</span></v-btn>
       </v-col>
     </v-row>
     <!-- <v-row v-if="errMsg">
@@ -470,18 +476,23 @@ export default {
         </ag-grid-vue>
       </v-col>
     </v-row>
-    <v-row class="btn-right">
-      <v-col cols="3">
-        <v-btn color="primary" flat>급여표(6쪽)</v-btn>
+    <v-row>
+      <v-col cols="4"></v-col>
+      <v-col cols="2">
+        <v-btn color="primary" flat width="150" height="40">
+          <span class="text-16">급여표(6쪽)</span></v-btn>
       </v-col>
-      <v-col cols="3">
-        <v-btn color="primary" flat @click="downloadPayroll">급여대장</v-btn>
+      <v-col cols="2">
+        <v-btn color="primary" flat width="150" height="40" @click="downloadPayroll">
+          <span class="text-16">급여대장</span></v-btn>
       </v-col>
-      <v-col cols="3">
-        <v-btn color="primary" flat >급여명세서</v-btn>
+      <v-col cols="2">
+        <v-btn color="primary" flat width="150" height="40">
+          <span class="text-16">급여명세서</span></v-btn>
       </v-col>
-      <v-col cols="3">
-        <v-btn color="primary" flat>개인급여내역</v-btn>
+      <v-col cols="2">
+        <v-btn color="primary" flat width="150" height="40">
+          <span class="text-16">개인급여내역</span></v-btn>
       </v-col>
     </v-row>
     <!--E-mail 전송 팝업창-->

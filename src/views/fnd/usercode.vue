@@ -391,7 +391,7 @@ export default {
     <v-container>
         <div class="d-flex align-center mb-7">
             <div class="bg-primary-lighten-5 px-3 py-2 rounded me-3 d-inline-block">
-                <i class="tio- text-primary text-18">shopping</i>
+                <i class="tio- text-primary text-20">shopping</i>
             </div>
             <div class="text-20 f-600">코드 관리</div>
         </div>
@@ -431,7 +431,7 @@ export default {
             </v-col>
         </v-row>
 
-        <!-- 구분선 --><hr class="my-5">
+        <!-- 구분선 --><hr class="my-5  mr-5">
         <v-row class="grid-wrap">
             <v-col cols="4" class="my-5">
                 <!--fnd_code table-->
@@ -467,17 +467,17 @@ export default {
                     <v-col cols="6"></v-col>
                     <v-col cols="2">
                         <v-btn color="primary" flat @click="openPopup('add')" width="100" height="40">
-                            <i class="tio- text-20 me-2">add</i><span class="text-20">추가</span>
+                            <span class="text-16">추가</span>
                         </v-btn> 
                     </v-col>      
                     <v-col cols="2">
                         <v-btn color="primary" flat @click="openPopup('modify')" width="100" height="40">
-                            <i class="tio- text-20 me-2">edit</i><span class="text-20">수정</span>
+                            <span class="text-16">수정</span>
                         </v-btn> 
                     </v-col>               
                     <v-col cols="2">
                         <v-btn color="error" flat @click="deleteCodeDetailCom" width="100" height="40">
-                            <i class="tio- text-20 me-2">delete</i><span class="text-20">삭제</span>
+                            <span class="text-16">삭제</span>
                         </v-btn>
                     </v-col>
                 </v-row>

@@ -316,9 +316,9 @@ export default {
     </v-overlay>
       <div class="d-flex align-center mb-7">
         <div class="bg-primary-lighten-5 px-3 py-2 rounded me-3">
-          <i class="tio- text-primary text-18">shopping</i>
+          <i class="tio- text-primary text-20">shopping</i>
         </div>
-        <div class="text-subtitle-2 f-600">ADT 근태 관리</div>
+        <div class="text-20 f-600">ADT 근태 관리</div>
       </div>
       <v-row>
         <v-col cols="12">
@@ -358,25 +358,25 @@ export default {
                   month-picker>
                 </VueDatePicker>
               </v-col>
-              <v-col cols="2">
-                <v-btn color="primary" flat class="grid-btn-wrap" @click="getSearchList">
-                  조회
+              <v-col cols="2" class="pr-10">
+                <v-btn color="primary" flat class="grid-btn-wrap" width="100" height="40" @click="getSearchList">
+                  <span class="text-20">조회</span>
                 </v-btn>
               </v-col>
             </v-row>
         </v-col>
       </v-row>
-      <!-- 구분선 --><hr class="my-5">
+      <!-- 구분선 --><hr class="my-5 mr-5">
       <v-row>
-        <v-col cols="7" class="mx-7"></v-col>
+        <v-col cols="8"></v-col>
         <v-col cols="2">
-            <v-btn color="primary" flat @click="getErpIU">
-                <i class="tio- text-18 me-2">save</i>사원정보 가져오기 <br> (ERP IU)
+            <v-btn color="primary" flat @click="getErpIU" width="150" height="40">
+              <span class="text-16">사원정보</span><span class="text-13">(ERP IU)</span>
             </v-btn>         
         </v-col>
         <v-col cols="2">
-            <v-btn color="primary" flat class="detail-search" @click="searchShow=true">
-              <i class="tio- text-18 me-2">file_add</i>엑셀 업로드
+            <v-btn color="primary" flat class="detail-search" @click="searchShow=true" width="150" height="40">
+              <span class="text-16">ADT 업로드</span>
             </v-btn>
             <v-overlay
             activator="parent"
