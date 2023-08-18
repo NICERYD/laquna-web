@@ -263,7 +263,6 @@ export default {
 
     downloadReport(reportType){
       this.setDateFormat();
-
       let sendData = {
         companyId: this.search.company.value,
         estId: this.search.business.value,
@@ -279,7 +278,6 @@ export default {
             responseType: "blob",
         })
         .then((res) => {
-          
               const name = res.headers["content-disposition"]
               .split("filename=")[1]
               .replace(/"/g, "");
@@ -329,37 +327,6 @@ export default {
     closePopup(){
       this.dialog = false;
       this.emailSelected.rowData = [];
-    },
-
-    downloadPayroll(){
-      this.setDateFormat();
-      let sendData = {
-        companyId: this.search.company.value,
-        estId: this.search.business.value,
-        yyyymm: this.search.yyyymm
-      };
-      try{
-        this.loading = true;
-        this.axios.post("/api/v1/hr/downloadPayroll", sendData, {
-            headers: {
-                "Content-type": "application/json",
-            },
-        })
-        .then((res) => {
-            if(res.data.success){
-              this.loading = false;
-              this.successMsg = "급여대장 다운로드 완료";
-              this.success = true;
-            }else {
-              console.log("getpayrollReport Fail");
-              this.loading = false;
-              this.errMsg = "급여대장 다운로드 실패";
-              this.error = true;
-            }
-        });
-      }catch(err){
-          console.log(err.message);
-      }
     },
 
   },
