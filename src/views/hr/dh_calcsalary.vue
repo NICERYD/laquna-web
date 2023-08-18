@@ -190,6 +190,9 @@ export default {
               console.log(res.data.message);
             }else {
               console.log("getBasicSalaryData Fail");
+              this.loading = false;
+              this.errMsg = "급여항목가져오기 실패";
+              this.error = true;
             }
         });
       }catch(err){
@@ -217,6 +220,9 @@ export default {
               this.pay_calculate.rowData = res.data.data;
             }else {
               console.log("getCalcSalaryList Fail");
+              this.loading = false;
+              this.errMsg = "조회결과 불러오기 실패";
+              this.error = true;
             }
         });
       }catch(err){
@@ -245,6 +251,9 @@ export default {
               this.success = true;
             }else {
               console.log("getCalcSalaryList Fail");
+              this.loading = false;
+              this.errMsg = "급여계산 실패";
+              this.error = true;
             }
         });
       }catch(err){
@@ -252,29 +261,42 @@ export default {
       }
     },
 
-    downloadSalaryExcel(){
+    downloadReport(reportType){
       this.setDateFormat();
+
       let sendData = {
         companyId: this.search.company.value,
         estId: this.search.business.value,
-        yyyymm: this.search.yyyymm
+        yyyymm: this.search.yyyymm,
+        reportType: reportType
       };
       try{
         this.loading = true;
-        this.axios.post("/api/v1/hr/downloadSalaryExcel", sendData, {
+        this.axios.post("/api/v1/hr/downloadReport", sendData, {
             headers: {
                 "Content-type": "application/json",
             },
+            responseType: "blob",
         })
         .then((res) => {
-            if(res.data.success){
+          
+              const name = res.headers["content-disposition"]
+              .split("filename=")[1]
+              .replace(/"/g, "");
+              const url = window.URL.createObjectURL(new Blob([res.data]));
+              const link = document.createElement("a");
+              link.href = url;
+              link.setAttribute("download", name);
+              link.style.cssText = "display:none";
+              document.body.appendChild(link);
+              link.click();
+              link.remove();
+
               this.loading = false;
               this.successMsg = "엑셀 다운로드 완료";
               this.success = true;
-            }else {
-              console.log("getCalcSalaryList Fail");
-            }
-        });
+        }
+        );
       }catch(err){
           console.log(err.message);
       }
@@ -318,7 +340,7 @@ export default {
       };
       try{
         this.loading = true;
-        this.axios.post("/api/v1/hr/payrollReport", sendData, {
+        this.axios.post("/api/v1/hr/downloadPayroll", sendData, {
             headers: {
                 "Content-type": "application/json",
             },
@@ -330,6 +352,9 @@ export default {
               this.success = true;
             }else {
               console.log("getpayrollReport Fail");
+              this.loading = false;
+              this.errMsg = "급여대장 다운로드 실패";
+              this.error = true;
             }
         });
       }catch(err){
@@ -434,7 +459,7 @@ export default {
             <span class="text-16">급여계산</span></v-btn>         
       </v-col>
       <v-col cols="2">
-          <v-btn color="primary" flat @click="downloadSalaryExcel" width="150" height="40">
+          <v-btn color="primary" flat @click="downloadReport('ERPIU')" width="150" height="40">
             <span class="text-16">ERP IU 업로드</span></v-btn>
       </v-col>
       <v-col cols="2">
@@ -483,7 +508,7 @@ export default {
           <span class="text-16">급여표(6쪽)</span></v-btn>
       </v-col>
       <v-col cols="2">
-        <v-btn color="primary" flat width="150" height="40" @click="downloadPayroll">
+        <v-btn color="primary" flat width="150" height="40" @click="downloadReport('Payroll')">
           <span class="text-16">급여대장</span></v-btn>
       </v-col>
       <v-col cols="2">
