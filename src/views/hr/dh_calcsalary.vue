@@ -28,6 +28,7 @@ export default {
           month: new Date().getMonth(),
           year: new Date().getFullYear(),
         },
+        koreanName: "",
       },
       dateformat: '',
       pay_calculate: {
@@ -205,7 +206,8 @@ export default {
       let sendData = {
         companyId: this.search.company.value,
         estId: this.search.business.value,
-        yyyymm: this.search.yyyymm
+        yyyymm: this.search.yyyymm,
+        koreanName: this.search.koreanName
       };
       try{
         this.loading = true;
@@ -296,6 +298,9 @@ export default {
         }
         );
       }catch(err){
+          this.loading = false;
+          this.errMsg = "엑셀 다운로드 실패";
+          this.error = true;
           console.log(err.message);
       }
     },
@@ -414,6 +419,18 @@ export default {
               <span class="text-20">급여항목가져오기</span>
             </v-btn>
             </div>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="3">
+            <v-text-field
+                class="mw-200 px-3"
+                label="이름"
+                variant="outlined"
+                hide-details=""
+                v-model="search.koreanName"
+                @keyup.enter="getSearchList"
+            ></v-text-field>
           </v-col>
         </v-row>
       </v-col>
