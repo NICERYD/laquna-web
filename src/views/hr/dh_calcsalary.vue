@@ -44,8 +44,8 @@ export default {
         },
         columnDefs: [
             { headerName: "", headerCheckboxSelection: true, checkboxSelection: true, maxWidth: 50, },
-            { headerName: "사원코드", field: "employeeNumber", editable: false, minWidth: 80, },
-            { headerName: "사원명", field: "koreanName", editable: false, minWidth: 60, },
+            { headerName: "사원코드", field: "employeeNumber", editable: false, minWidth: 80, sortable: true, filter: true, },
+            { headerName: "사원명", field: "koreanName", editable: false, minWidth: 60, sortable: true, filter: true,},
             { headerName: "사업장", field: "estName", editable: false, minWidth: 90, },
             { headerName: "부서", field: "departmentName", editable: false, },
             { headerName: "직급", field: "definedName", editable: false, },
