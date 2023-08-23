@@ -496,7 +496,7 @@ export default {
           <span class="text-16">급여대장</span></v-btn>
       </v-col>
       <v-col cols="2">
-        <v-btn color="primary" flat width="150" height="40">
+        <v-btn color="primary" flat width="150" height="40" @click="downloadReport('Paystub')">
           <span class="text-16">급여명세서</span></v-btn>
       </v-col>
       <v-col cols="2">
