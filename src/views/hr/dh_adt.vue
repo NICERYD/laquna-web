@@ -48,10 +48,10 @@ export default {
         },
         columnDefs: [
             { headerName: "No.", field: "No.", valueGetter: 'node.rowIndex + 1', maxWidth: 50, },
-            { headerName: "근태기준일", field: "workDate", },
+            { headerName: "근태기준일", field: "workDate", sortable: true, filter: true, },
             { headerName: "사업장", field: "estName",  },
-            { headerName: "부서명", field: "departmentName",  },
-            { headerName: "사원번호", field: "employeeNumber",  },
+            { headerName: "부서명", field: "departmentName", sortable: true, filter: true,  },
+            { headerName: "사원번호", field: "employeeNumber", sortable: true, filter: true,  },
             { headerName: "사원명", field: "koreanName",  },
             { headerName: "직급", field: "definedName",  },
             { headerName: "근무형태", field: "workStatus" },
