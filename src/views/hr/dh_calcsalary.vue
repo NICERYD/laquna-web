@@ -61,7 +61,7 @@ export default {
                 { headerName: "휴일수당1", field: "holidayAllowance01", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn' },
                 { headerName: "휴일수당2", field: "holidayAllowance02", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn' },
                 { headerName: "직책수당", field: "positionAllowance", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn' },
-                { headerName: "기타수당", field: "otherAllowance", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn' },
+                { headerName: "기타수당", field: "otherAllowances", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn' },
                 { headerName: "보조금", field: "subsidies", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn' },
                 { headerName: "교통비", field: "transportationExpenses", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn' },
                 { headerName: "식대", field: "mealsExpenses", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn' },
