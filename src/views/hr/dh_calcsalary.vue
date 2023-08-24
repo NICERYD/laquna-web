@@ -500,7 +500,7 @@ export default {
           <span class="text-16">급여명세서</span></v-btn>
       </v-col>
       <v-col cols="2">
-        <v-btn color="primary" flat width="150" height="40">
+        <v-btn color="primary" flat width="150" height="40" @click="downloadReport('PersonalPayroll')">
           <span class="text-16">개인급여내역</span></v-btn>
       </v-col>
     </v-row>
