@@ -263,6 +263,36 @@ export default {
       }
     },
 
+    getTax(){
+      this.setDateFormat();
+      let sendData = {
+        companyId: this.search.company.value,
+        yyyymm: this.search.yyyymm
+      };
+      try{
+        this.loading = true;
+        this.axios.post("/api/v1/hr/erpiu/getTaxErpIU", sendData, {
+            headers: {
+                "Content-type": "application/json",
+            },
+        })
+        .then((res) => {
+            if(res.data.success){
+              this.loading = false;
+              this.successMsg = "세금 가져오기 완료";
+              this.success = true;
+            }else {
+              console.log("getTaxErpIU Fail");
+              this.loading = false;
+              this.errMsg = "세금 가져오기 실패";
+              this.error = true;
+            }
+        });
+      }catch(err){
+          console.log(err.message);
+      }
+    },
+
     downloadReport(reportType){
       this.setDateFormat();
       let sendData = {
@@ -447,7 +477,7 @@ export default {
             <span class="text-16">ERP IU 업로드</span></v-btn>
       </v-col>
       <v-col cols="2">
-          <v-btn color="primary" flat width="150" height="40">
+          <v-btn color="primary" flat width="150" height="40" @click="getTax">
             <span class="text-16">세금가져오기</span></v-btn>
       </v-col>
       <v-col cols="2">
