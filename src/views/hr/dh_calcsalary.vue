@@ -296,48 +296,53 @@ export default {
     },
 
     downloadReport(reportType){
-      this.setDateFormat();
-      if(this.search.sort != ""){
-        reportType += this.search.sort.value;
-      }
-      let sendData = {
-        companyId: this.search.company.value,
-        estId: this.search.business.value,
-        yyyymm: this.search.yyyymm,
-        reportType: reportType
-      };
-      try{
-        this.loading = true;
-        this.axios.post("/api/v1/hr/downloadReport", sendData, {
-            headers: {
-                "Content-type": "application/json",
-            },
-            responseType: "blob",
-        })
-        .then((res) => {
-              const name = res.headers["content-disposition"]
-              .split("filename=")[1]
-              .replace(/"/g, "");
-              const url = window.URL.createObjectURL(new Blob([res.data]));
-              const link = document.createElement("a");
-              link.href = url;
-              link.setAttribute("download", name);
-              link.style.cssText = "display:none";
-              document.body.appendChild(link);
-              link.click();
-              link.remove();
+      
+      if(reportType=="Payroll" && this.search.sort == ""){
+        this.errMsg = "급여대장 분류를 선택해주세요.";
+        this.error = true;
+      }else{
+        this.setDateFormat();
+        let sendData = {
+          companyId: this.search.company.value,
+          estId: this.search.business.value,
+          yyyymm: this.search.yyyymm,
+          reportType: reportType,
+          sort: this.search.sort.value,
+        };
+        try{
+          this.loading = true;
+          this.axios.post("/api/v1/hr/downloadReport", sendData, {
+              headers: {
+                  "Content-type": "application/json",
+              },
+              responseType: "blob",
+          })
+          .then((res) => {
+                const name = res.headers["content-disposition"]
+                .split("filename=")[1]
+                .replace(/"/g, "");
+                const url = window.URL.createObjectURL(new Blob([res.data]));
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", name);
+                link.style.cssText = "display:none";
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
 
-              this.loading = false;
-              this.successMsg = "엑셀 다운로드 완료";
-              this.success = true;
+                this.loading = false;
+                this.successMsg = "엑셀 다운로드 완료";
+                this.success = true;
+          }
+          );
+        }catch(err){
+            this.loading = false;
+            this.errMsg = "엑셀 다운로드 실패";
+            this.error = true;
+            console.log(err.message);
         }
-        );
-      }catch(err){
-          this.loading = false;
-          this.errMsg = "엑셀 다운로드 실패";
-          this.error = true;
-          console.log(err.message);
       }
+      
     },
 
 
