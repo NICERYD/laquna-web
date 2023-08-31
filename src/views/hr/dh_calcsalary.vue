@@ -20,6 +20,7 @@ export default {
       errMsg: "",
       company_store:[],
       business_store:[],
+      payrollSort:[{value:"All", name:"개인별"},{value:"Est", name:"지사별"}],
       search: {
         company: "",
         business: "",
@@ -29,6 +30,7 @@ export default {
           year: new Date().getFullYear(),
         },
         koreanName: "",
+        sort: "",
       },
       dateformat: '',
       pay_calculate: {
@@ -295,6 +297,9 @@ export default {
 
     downloadReport(reportType){
       this.setDateFormat();
+      if(this.search.sort != ""){
+        reportType += this.search.sort.value;
+      }
       let sendData = {
         companyId: this.search.company.value,
         estId: this.search.business.value,
@@ -515,15 +520,29 @@ export default {
         </ag-grid-vue>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col cols="4"></v-col>
+    <v-row class="align-center justify-center">
+      <v-col cols="2"></v-col>
       <v-col cols="2">
         <v-btn color="primary" flat width="150" height="40" @click="downloadReport('Payroll6InTable')">
           <span class="text-16">급여표(6쪽)</span></v-btn>
       </v-col>
       <v-col cols="2">
-        <v-btn color="primary" flat width="150" height="40" @click="downloadReport('Payroll')">
-          <span class="text-16">급여대장</span></v-btn>
+        <v-select
+            label="분류"
+            variant="outlined"
+            :items="payrollSort"
+            item-title="name"
+            item-value="value"
+            v-model="search.sort"
+            return-object
+            hide-details=""
+            density="compact">
+        </v-select>
+      </v-col>
+      <v-col cols="2">
+        <v-btn class="my-3" color="primary" flat width="150" height="40" @click="downloadReport('Payroll')">
+          <span class="text-16">급여대장</span>
+        </v-btn>
       </v-col>
       <v-col cols="2">
         <v-btn color="primary" flat width="150" height="40" @click="downloadReport('Paystub')">
