@@ -18,6 +18,8 @@ export default {
       successMsg: "",
       error: false,
       errMsg: "",
+      uploadPopup: false,
+      file: null,
       company_store:[],
       business_store:[],
       payrollSort:[{value:"All", name:"개인별"},{value:"Est", name:"지사별"}],
@@ -297,6 +299,57 @@ export default {
       }
     },
 
+    formValidation(value){
+
+      const allowedFileType= /(\.csv|\.xlsx|\.xls)$/i;
+
+      if(!value || value.length === 0){
+        this.popupErrMsg = "업로드할 파일을 선택해주세요.";
+      }else if(!allowedFileType.test(value[0].name)){
+        this.popupErrMsg = "올바른 파일 형식(csv, xlsx, xsl)이 아닙니다."
+      }else return true;
+
+      return false;
+    },
+
+    uploadOtherAllowance(){
+      this.setDateFormat();
+      if(this.formValidation(this.file)){
+        let uploadFile = this.file[0];
+        var frm = new FormData();
+        frm.append('file', uploadFile);
+        frm.append('yyyymm', this.search.yyyymm);
+        try{
+          this.loading = true;
+          this.axios.post(encodeURI("/api/v1/hr/uploadOtherAllowance/"), frm, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          })
+          .then((res) => {
+            if (res.data.code == "200") {
+              console.log(res.data.message);
+              this.popupErrMsg = '';
+                this.uploadPopup = false;
+                this.loading = false;
+                this.successMsg = "업로드가 완료되었습니다."
+                this.success = true;
+                this.file = null;
+            }else {
+              console.log("실패");
+              this.popupErrMsg = res.data.message;
+              this.loading = false;
+            }
+          });
+        }catch(err){
+          this.popupErrMsg = "Uploade Fail"
+        }
+      }else{
+        this.popupErrMsg = '업로드중 오류가 발생하였습니다.';
+      }
+
+    },
+
     getTax(){
       this.setDateFormat();
       let sendData = {
@@ -518,8 +571,60 @@ export default {
             <span class="text-16">급여계산</span></v-btn>         
       </v-col>
       <v-col cols="2">
-        <v-btn color="primary" flat @click="updateOtherAllowance" width="150" height="40">
+        <v-btn color="primary" flat class="detail-search" @click="searchShow=true" width="150" height="40">
             <span class="text-16">기타수당</span></v-btn>
+            <v-overlay
+            activator="parent"
+            location-strategy="connected"
+            persistent
+            v-model="uploadPopup"
+            >
+              <v-card class="excel-card">
+                <h4 class="ma-3 text-subtitle-2 font-weight-bold">엑셀 업로드</h4>
+                <v-divider></v-divider>
+                <v-row>
+                    <v-col>
+                      <v-row class="ma-5">
+                        <v-file-input 
+                          label="기타수당"
+                          v-model="file"
+                          variant="outlined" 
+                          prepend-icon="tio-file_add"
+                          accept=".csv, 
+                          application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, 
+                          application/vnd.ms-excel"></v-file-input>
+                      </v-row>
+                      <v-alert v-if="popupErrMsg"
+                        color="error"
+                        theme="dark"
+                        border="start"
+                        prominent
+                        class="mx-5"
+                      >
+                        <i class="tio- text-18 me-2"> error_outlined </i>
+                        {{ popupErrMsg }}
+                      </v-alert>
+                    </v-col>
+                </v-row>
+                <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                    color="blue-darken-1"
+                    variant="text"
+                    @click="this.uploadPopup = false;"
+                >
+                    Close
+                </v-btn>
+                <v-btn
+                    color="blue-darken-1"
+                    variant="text"
+                    @click="uploadOtherAllowance"
+                >
+                    Upload
+                </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-overlay>
       </v-col>
       <v-col cols="2">
           <v-btn color="primary" flat @click="downloadReport('ERPIU')" width="150" height="40">
@@ -671,6 +776,10 @@ export default {
 .grid-wrap {
     flex-wrap: nowrap;
     width: 100%;
+}
+
+.excel-card{
+  width:30rem;
 }
 
 </style>
