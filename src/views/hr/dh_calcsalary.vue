@@ -63,11 +63,12 @@ export default {
                 { headerName: "휴일수당1", field: "holidayAllowance01", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn' },
                 { headerName: "휴일수당2", field: "holidayAllowance02", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn' },
                 { headerName: "직책수당", field: "positionAllowance", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn' },
-                { headerName: "기타수당", field: "otherAllowances", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn' },
+                { headerName: "기타수당1", field: "otherAllowance01", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn' },
+                { headerName: "기타수당2", field: "otherAllowance02", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn' },
                 { headerName: "보조금", field: "subsidies", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn' },
                 { headerName: "교통비", field: "transportationExpenses", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn' },
                 { headerName: "식대", field: "mealsExpenses", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn' },
-                { headerName: "지급액계", field: "salarySum", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn'},
+                { headerName: "지급액계", field: "salarySum", editable: false, valueFormatter:'Number(value).toLocaleString()', type:'numericColumn'},
               ],
             },
         ],
@@ -228,6 +229,37 @@ export default {
               this.errMsg = "조회결과 불러오기 실패";
               this.error = true;
             }
+        });
+      }catch(err){
+          console.log(err.message);
+      }
+    },
+
+    saveList(){
+      this.setDateFormat();
+      let sendData = {
+        companyId: this.search.company.value,
+        estId: this.search.business.value,
+        yyyymm: this.search.yyyymm,
+        koreanName: this.search.koreanName
+      };
+      try{
+        this.loading = true;
+        this.axios.post("/api/v1/hr/updateSalary", sendData, {
+            headers: {
+                "Content-type": "application/json",
+            },
+        }).then((res) => {
+          if(res.data.success){
+            this.loading = false;
+            getSearchList();
+            this.successMsg = "저장 완료";
+            this.success = true;
+          }else {
+            this.loading = false;
+            this.errMsg = "저장 실패";
+            this.error = true;
+          }
         });
       }catch(err){
           console.log(err.message);
@@ -453,8 +485,11 @@ export default {
           <v-col cols="4">
             <div class="btn-right pr-5">
               <v-btn color="primary" flat class="px-3 ma-3" width="100" height="40" @click="getSearchList">
-              <span class="text-20">조회</span>
-            </v-btn>
+                <span class="text-20">조회</span>
+              </v-btn>
+              <v-btn color="primary" flat class="px-3 ma-3" width="100" height="40" @click="saveList">
+                <span class="text-20">저장</span>
+              </v-btn>
             <!-- <v-btn color="primary" flat class="px-3" width="200" height="40" @click="getBasicSalaryData">
               <span class="text-20">급여항목가져오기</span>
             </v-btn> -->
@@ -477,10 +512,14 @@ export default {
     </v-row>
     <!-- 구분선 --><hr class="my-5">
     <v-row>
-      <v-col cols="4"></v-col>
+      <v-col cols="2"></v-col>
       <v-col cols="2">
           <v-btn color="primary" flat @click="calcSalary" width="150" height="40">
             <span class="text-16">급여계산</span></v-btn>         
+      </v-col>
+      <v-col cols="2">
+        <v-btn color="primary" flat @click="updateOtherAllowance" width="150" height="40">
+            <span class="text-16">기타수당</span></v-btn>
       </v-col>
       <v-col cols="2">
           <v-btn color="primary" flat @click="downloadReport('ERPIU')" width="150" height="40">
