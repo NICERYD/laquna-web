@@ -445,9 +445,9 @@ export default {
               <v-btn color="primary" flat class="px-3 ma-3" width="100" height="40" @click="getSearchList">
               <span class="text-20">조회</span>
             </v-btn>
-            <v-btn color="primary" flat class="px-3" width="200" height="40" @click="getBasicSalaryData">
+            <!-- <v-btn color="primary" flat class="px-3" width="200" height="40" @click="getBasicSalaryData">
               <span class="text-20">급여항목가져오기</span>
-            </v-btn>
+            </v-btn> -->
             </div>
           </v-col>
         </v-row>
