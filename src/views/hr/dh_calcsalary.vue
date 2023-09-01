@@ -76,6 +76,9 @@ export default {
             },
         ],
         rowData: [],
+        isRowSelectable: (rowNode) => {
+          return rowNode.data ? rowNode.data.employeeNumber != "합계" : false;
+        },
       },
 
       editedRows:[],
@@ -83,7 +86,7 @@ export default {
       dialog: false,
       selectedRows: [],
 
-      emailSelected: {
+      email_grid: {
         gridOptions: null,
         gridApi: null,
         columnApi: null,
@@ -105,13 +108,7 @@ export default {
       }
     }
   },
-  // befroeMount(){
-  //   this.pay_calculate.gridOptions = {
-  //     pinnedTopRowData: [
-  //       {employeeNumber: '합계', basicSalary: 0}
-  //     ]
-  //   }
-  // },
+
   mounted(){
     this.setSelectBox();
 
@@ -132,10 +129,10 @@ export default {
     },
 
     onEmailGridReady(params){
-      this.emailSelected.gridApi = params.api;
-      this.emailSelected.columnApi = params.columnApi;
-      this.emailSelected.gridApi.sizeColumnsToFit();
-      this.emailSelected.gridApi.forEachNode(node => {
+      this.email_grid.gridApi = params.api;
+      this.email_grid.columnApi = params.columnApi;
+      this.email_grid.gridApi.sizeColumnsToFit();
+      this.email_grid.gridApi.forEachNode(node => {
         node.setSelected(true);
       });
     },
@@ -277,7 +274,7 @@ export default {
             this.loading = false;
             this.successMsg = "저장 완료";
             this.success = true;
-            getSearchList();
+            this.getSearchList();
           }else {
             this.loading = false;
             this.errMsg = "저장 실패";
@@ -356,6 +353,7 @@ export default {
                 this.successMsg = "업로드가 완료되었습니다."
                 this.success = true;
                 this.file = null;
+                this.getSearchList();
             }else {
               console.log("실패");
               this.popupErrMsg = res.data.message;
@@ -456,7 +454,7 @@ export default {
         let selectedNodes = this.pay_calculate.gridApi.getSelectedNodes();
         if(selectedNodes.length != 0){
           let selectedData = selectedNodes.map( node => node.data );
-          this.emailSelected.rowData = selectedData;
+          this.email_grid.rowData = selectedData;
           return true;
         }else{
           return false;
@@ -477,8 +475,24 @@ export default {
 
     closePopup(){
       this.dialog = false;
-      this.emailSelected.rowData = [];
+      this.email_grid.rowData = [];
     },
+
+    onClickSendBtn(){
+      let selectedNodes = this.email_grid.gridApi.getSelectedNodes();
+      if(selectedNodes.length != 0){
+        let selectedData = selectedNodes.map(node => node.data);
+        console.log(selectedData);
+        let employeeNumberList = [];
+        for(let i=0; i<selectedData.length; i++){
+          employeeNumberList.push(selectedData[i].employeeNumber);
+        }
+        console.log(employeeNumberList);
+      }else{
+        this.error = true;
+        this.errMsg = "선택한 사원이 없습니다.";
+      }
+    }
 
   },
 }
@@ -685,6 +699,7 @@ export default {
         :defaultColDef="pay_calculate.defaultColDef" 
         :rowData="pay_calculate.rowData"
         rowSelection="multiple"
+        :isRowSelectable="pay_calculate.isRowSelectable"
         @grid-ready="onPayGridReady"
         @cellValueChanged="onCellValueChanged"
         >
@@ -735,13 +750,13 @@ export default {
           <span class="text-title f-600">급여명세서 E-mail 전송</span>
         </v-card-title>
         <v-card-text>
-          <!--emailSelected table-->
+          <!--email_grid table-->
           <ag-grid-vue
             style="height: 250px"
             class="ag-theme-balham"
-            :columnDefs="emailSelected.columnDefs"
-            :defaultColDef="emailSelected.defaultColDef" 
-            :rowData="emailSelected.rowData"
+            :columnDefs="email_grid.columnDefs"
+            :defaultColDef="email_grid.defaultColDef" 
+            :rowData="email_grid.rowData"
             rowSelection="multiple"
             @grid-ready="onEmailGridReady"
           >
@@ -769,6 +784,7 @@ export default {
         <v-btn
             color="blue-darken-1"
             variant="text"
+            @click="onClickSendBtn"
         >
             Send
         </v-btn>
@@ -802,6 +818,10 @@ export default {
 
 .excel-card{
   width:30rem;
+}
+
+.sum-row{
+  background-color: lightgray !important;
 }
 
 </style>
