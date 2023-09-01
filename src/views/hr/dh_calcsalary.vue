@@ -48,6 +48,7 @@ export default {
         },
         columnDefs: [
             { headerName: "", headerCheckboxSelection: true, checkboxSelection: true, maxWidth: 50, },
+            { field: "salaryId", hide: true},
             { headerName: "사원코드", field: "employeeNumber", editable: false, minWidth: 80, sortable: true, filter: true, },
             { headerName: "사원명", field: "koreanName", editable: false, minWidth: 60, sortable: true, filter: true,},
             { headerName: "사업장", field: "estName", editable: false, minWidth: 90, },
@@ -77,6 +78,8 @@ export default {
         rowData: [],
       },
 
+      editedRows:[],
+
       dialog: false,
       selectedRows: [],
 
@@ -102,6 +105,13 @@ export default {
       }
     }
   },
+  // befroeMount(){
+  //   this.pay_calculate.gridOptions = {
+  //     pinnedTopRowData: [
+  //       {employeeNumber: '합계', basicSalary: 0}
+  //     ]
+  //   }
+  // },
   mounted(){
     this.setSelectBox();
 
@@ -225,6 +235,7 @@ export default {
             if(res.data.success){
               this.loading = false;
               this.pay_calculate.rowData = res.data.data;
+              // this.pay_calculate.gridApi.setPinnedTopRowData([]);
             }else {
               console.log("getCalcSalaryList Fail");
               this.loading = false;
@@ -237,26 +248,36 @@ export default {
       }
     },
 
-    saveList(){
-      this.setDateFormat();
-      let sendData = {
-        companyId: this.search.company.value,
-        estId: this.search.business.value,
-        yyyymm: this.search.yyyymm,
-        koreanName: this.search.koreanName
-      };
+    onCellValueChanged(params){
+      let editedColumnId = params.data.salaryId;
+      let editedColumn = params.column.colId;
+      let editedValue = params.newValue;
+
+      let existIndex = this.editedRows.findIndex(v => v.salaryId === editedColumnId);
+      if(existIndex != -1){
+        eval(`this.editedRows[existIndex].${editedColumn} = editedValue`);
+      }else{
+        let editedRow = {};
+        editedRow['salaryId'] = editedColumnId;
+        editedRow[editedColumn] = editedValue;
+        this.editedRows.push(editedRow);
+      }
+    },
+
+    onClickSaveBtn(){
+      debugger;
       try{
         this.loading = true;
-        this.axios.post("/api/v1/hr/updateSalary", sendData, {
+        this.axios.post("/api/v1/hr/updateSalaryList", this.editedRows, {
             headers: {
                 "Content-type": "application/json",
             },
         }).then((res) => {
           if(res.data.success){
             this.loading = false;
-            getSearchList();
             this.successMsg = "저장 완료";
             this.success = true;
+            getSearchList();
           }else {
             this.loading = false;
             this.errMsg = "저장 실패";
@@ -540,7 +561,7 @@ export default {
               <v-btn color="primary" flat class="px-3 ma-3" width="100" height="40" @click="getSearchList">
                 <span class="text-20">조회</span>
               </v-btn>
-              <v-btn color="primary" flat class="px-3 ma-3" width="100" height="40" @click="saveList">
+              <v-btn color="primary" flat class="px-3 ma-3" width="100" height="40" @click="onClickSaveBtn">
                 <span class="text-20">저장</span>
               </v-btn>
             <!-- <v-btn color="primary" flat class="px-3" width="200" height="40" @click="getBasicSalaryData">
@@ -665,6 +686,7 @@ export default {
         :rowData="pay_calculate.rowData"
         rowSelection="multiple"
         @grid-ready="onPayGridReady"
+        @cellValueChanged="onCellValueChanged"
         >
         </ag-grid-vue>
       </v-col>
