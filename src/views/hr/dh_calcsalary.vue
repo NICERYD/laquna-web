@@ -49,6 +49,8 @@ export default {
         columnDefs: [
             { headerName: "", headerCheckboxSelection: true, checkboxSelection: true, maxWidth: 50, },
             { field: "salaryId", hide: true},
+            { field: "residentRegistrationNumber", hide: true},
+            { field: "emailAddress", hide: true},
             { headerName: "사원코드", field: "employeeNumber", editable: false, minWidth: 80, sortable: true, filter: true, },
             { headerName: "사원명", field: "koreanName", editable: false, minWidth: 60, sortable: true, filter: true,},
             { headerName: "사업장", field: "estName", editable: false, minWidth: 90, },
@@ -97,12 +99,13 @@ export default {
         },
         columnDefs: [
             { headerName: "", headerCheckboxSelection: true, checkboxSelection: true, maxWidth: 40, minWidth:40, },
-            { headerName: "사원코드", field: "employeeNumber", editable: false, minWidth: 80, },
-            { headerName: "사원명", field: "koreanName", editable: false, minWidth: 60, },
+            { field: "residentRegistrationNumber", hide: true},
+            { headerName: "사원코드", field: "employeeNumber", editable: false, minWidth: 80, maxWidth: 80, },
+            { headerName: "사원명", field: "koreanName", editable: false, minWidth: 70, maxWidth: 80 },
             { headerName: "사업장", field: "estName", editable: false, minWidth: 90, },
             { headerName: "부서", field: "departmentName", editable: false, },
-            { headerName: "직급", field: "definedName", editable: false, },
-            { headerName: "E-mail", field: "email", editable: true, },
+            { headerName: "직급", field: "definedName", editable: false, minWidth: 60, maxWidth: 80 },
+            { headerName: "E-mail", field: "emailAddress", editable: true, minWidth: 120 },
         ],
         rowData: [],
       }
@@ -232,7 +235,6 @@ export default {
             if(res.data.success){
               this.loading = false;
               this.pay_calculate.rowData = res.data.data;
-              // this.pay_calculate.gridApi.setPinnedTopRowData([]);
             }else {
               console.log("getCalcSalaryList Fail");
               this.loading = false;
@@ -262,7 +264,6 @@ export default {
     },
 
     onClickSaveBtn(){
-      debugger;
       try{
         this.loading = true;
         this.axios.post("/api/v1/hr/updateSalaryList", this.editedRows, {
@@ -488,6 +489,30 @@ export default {
           employeeNumberList.push(selectedData[i].employeeNumber);
         }
         console.log(employeeNumberList);
+
+        this.setDateFormat();
+        let sendData = {
+          companyId: this.search.company.value,
+          estId: this.search.business.value,
+          yyyymm: this.search.yyyymm,
+          employeeNumberList: employeeNumberList
+        };
+
+        try{
+          this.loading = true;
+          this.axios.post("/api/v1/hr/testLocalMail", sendData, {
+              headers: {
+                  "Content-type": "application/json",
+              },
+          })
+          .then((res) => {
+            console.log(res);
+            this.loading = false;
+          });
+        }catch(err){
+            console.log(err.message);
+        }
+
       }else{
         this.error = true;
         this.errMsg = "선택한 사원이 없습니다.";
