@@ -632,7 +632,7 @@ export default {
       </v-col>
       <v-col cols="2">
         <v-btn color="primary" flat class="detail-search" @click="searchShow=true" width="150" height="40">
-            <span class="text-16">기타수당</span></v-btn>
+            <span class="text-15">연차정산/초과수당</span></v-btn>
             <v-overlay
             activator="parent"
             location-strategy="connected"
