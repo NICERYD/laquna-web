@@ -105,7 +105,7 @@ export default {
             { headerName: "사업장", field: "estName", editable: false, minWidth: 90, },
             { headerName: "부서", field: "departmentName", editable: false, },
             { headerName: "직급", field: "definedName", editable: false, minWidth: 60, maxWidth: 80 },
-            { headerName: "E-mail", field: "emailAddress", editable: true, minWidth: 120 },
+            { headerName: "E-mail", field: "emailAddress", editable: false, minWidth: 120 },
         ],
         rowData: [],
       }
