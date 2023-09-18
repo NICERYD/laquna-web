@@ -97,7 +97,7 @@ export default {
             },
           })
           .then((res) => {
-            if (res.data.code == "200") {
+            if (res.data.success) {
               this.success = true;
               this.$router.push('Signin');
             }else {
