@@ -278,6 +278,7 @@ export default {
             if(res.data.success){
               this.loading = false;
               this.success = true;
+              this.getSearchList();
             }else {
               console.log("getAdtGrid Fail");
               this.loading = false;
