@@ -230,7 +230,7 @@ export default {
             }
           })
           .then((res) => {
-            if (res.data.code == "200") {
+            if (res.data.success) {
               console.log(res.data.message);
               this.popupErrMsg = '';
                 this.overlay = false;
@@ -255,6 +255,7 @@ export default {
 
     closePopup(){
       this.overlay = false;
+      this.popupErrMsg = null;
       this.file.documentIO = null;
       this.file.documentOut = null;
     },
