@@ -224,7 +224,6 @@ export default {
         frm.append('yyyymm', this.search.yyyymm);
         try{
           this.loading = true;
-          // this.axios.post(encodeURI("/api/v1/hr/uploadADTExcel?file01="+file01+"&file02="+file02),
           this.axios.post(encodeURI("/api/v1/hr/uploadADTExcel/"), frm, {
             headers: {
               'Content-Type': 'multipart/form-data'

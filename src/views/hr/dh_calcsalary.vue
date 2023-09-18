@@ -646,7 +646,7 @@ export default {
                     <v-col>
                       <v-row class="ma-5">
                         <v-file-input 
-                          label="기타수당"
+                          label="연차정산/초과수당"
                           v-model="file"
                           variant="outlined" 
                           prepend-icon="tio-file_add"
