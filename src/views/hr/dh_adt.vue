@@ -107,7 +107,8 @@ export default {
               this.company_store = res.data.data;
               this.search.company = this.company_store[0];
             }else {
-                console.log("getCompanyList Fail");
+              this.errMsg = res.data.message;
+              this.error = true;
             }
         }).catch((error => {
             console.log(error);
@@ -126,7 +127,8 @@ export default {
               this.business_store = res.data.data;
               this.search.business = this.business_store[0];
             }else {
-                console.log("getBusinessList Fail");
+              this.errMsg = res.data.message;
+              this.error = true;
             }
         }).catch((error => {
             console.log(error);
@@ -159,11 +161,18 @@ export default {
         })
         .then((res) => {
             if(res.data.success){
-              this.adt.rowData = res.data.data;
-              this.loading = false;
+              if(res.data.data.length === 0){
+                this.loading = false;
+                this.errMsg = "데이터가 없습니다.";
+                this.error = true;
+              }else{
+                this.adt.rowData = res.data.data;
+                this.loading = false;
+              }
             }else {
-              console.log("getAdtGrid Fail");
               this.loading = false;
+              this.errMsg = res.data.message;
+              this.error = true;
             }
         }).catch((error => {
             this.loading = false;
@@ -239,7 +248,6 @@ export default {
           })
           .then((res) => {
             if (res.data.success) {
-              console.log(res.data.message);
               this.popupErrMsg = '';
                 this.overlay = false;
                 this.loading = false;
@@ -247,13 +255,11 @@ export default {
                 this.file.documentIO = null;
                 this.file.documentOut = null;
             }else {
-              console.log("실패");
               this.popupErrMsg = res.data.message;
               this.loading = false;
             }
           }).catch((error => {
               this.loading = false;
-              console.log(error);
               this.popupErrMsg = error.message;
           }));
       }else{
@@ -287,8 +293,9 @@ export default {
             this.success = true;
             this.getSearchList();
           }else {
-            console.log("getAdtGrid Fail");
             this.loading = false;
+            this.errMsg = res.data.message;
+            this.error = true;
           }
       }).catch((error => {
           this.loading = false;

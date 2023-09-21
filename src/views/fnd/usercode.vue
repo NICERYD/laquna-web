@@ -134,7 +134,8 @@ export default {
                 this.module_store = res.data.data;
                 this.search.module = this.module_store[0];
                 }else {
-                    console.log("getCompanyList Fail");
+                    this.errMsg = res.data.message;
+                    this.error = true;
                 }
             }).catch((error => {
                 console.log(error);
@@ -190,7 +191,8 @@ export default {
                     this.fnd_code.rowData = res.data.data;
                     this.getDetailGrid();
                 }else {
-                    console.log("fnd_code Grid Fail");
+                    this.errMsg = res.data.message;
+                    this.error = true;
                 }
             }).catch((error => {
                 console.log(error);
@@ -221,7 +223,8 @@ export default {
                         this.fnd_code_detail_sys.rowData = res.data.data.codeDetailListSys;
                         this.fnd_code_detail_com.rowData = res.data.data.codeDetailListCom;
                     }else {
-                        console.log("fnd_code_detail Grid Fail");
+                        this.errMsg = res.data.message;
+                        this.error = true;
                 }
                 }).catch((error => {
                     console.log(error);
@@ -251,7 +254,8 @@ export default {
 
                     // this.getDetailGrid();
                 }else {
-                    console.log("getSearchList Fail");
+                    this.errMsg = res.data.message;
+                    this.error = true;
                 }
             }).catch((error => {
                 console.log(error);
@@ -379,6 +383,7 @@ export default {
                         if(res.data.success){
                             this.getDetailGrid();
                         }else {
+                            this.slaveErrMsg = res.data.message;
                             console.log("deleteCodeDetailCom Fail");
                         }
                     }).catch((error => {

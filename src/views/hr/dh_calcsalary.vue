@@ -152,7 +152,8 @@ export default {
               this.company_store = res.data.data;
               this.search.company = this.company_store[0];
             }else {
-                console.log("getCompanyList Fail");
+              this.errMsg = res.data.message;
+              this.error = true;
             }
         }).catch((error => {
             console.log(error);
@@ -171,7 +172,8 @@ export default {
               this.business_store = res.data.data;
               this.search.business = this.business_store[0];
             }else {
-                console.log("getBusinessList Fail");
+              this.errMsg = res.data.message;
+              this.error = true;
             }
         }).catch((error => {
             console.log(error);
@@ -209,9 +211,9 @@ export default {
               this.success = true;
               console.log(res.data.message);
             }else {
-              console.log("getBasicSalaryData Fail");
+              console.log(res.data.message);
               this.loading = false;
-              this.errMsg = "급여항목가져오기 실패";
+              this.errMsg = res.data.message;
               this.error = true;
             }
         }).catch((error => {
@@ -242,9 +244,9 @@ export default {
               this.loading = false;
               this.pay_calculate.rowData = res.data.data;
             }else {
-              console.log("getCalcSalaryList Fail");
+              console.log(res.data.message);
               this.loading = false;
-              this.errMsg = "조회결과 불러오기 실패";
+              this.errMsg = res.data.message;
               this.error = true;
             }
         }).catch((error => {
@@ -285,8 +287,9 @@ export default {
             this.success = true;
             this.getSearchList();
           }else {
+            console.log(res.data.message);
             this.loading = false;
-            this.errMsg = "저장 실패";
+            this.errMsg = res.data.message;
             this.error = true;
           }
         }).catch((error => {
@@ -318,9 +321,9 @@ export default {
               this.successMsg = "급여계산 완료";
               this.success = true;
             }else {
-              console.log("getCalcSalaryList Fail");
+              console.log(res.data.message);
               this.loading = false;
-              this.errMsg = "급여계산 실패";
+              this.errMsg = res.data.message;
               this.error = true;
             }
         }).catch((error => {
@@ -369,7 +372,7 @@ export default {
                 this.file = null;
                 this.getSearchList();
             }else {
-              console.log("실패");
+              console.log(res.data.message);
               this.popupErrMsg = res.data.message;
               this.loading = false;
             }
@@ -404,9 +407,9 @@ export default {
               this.successMsg = "세금 가져오기 완료";
               this.success = true;
             }else {
-              console.log("getTaxErpIU Fail");
+              console.log(res.data.message);
               this.loading = false;
-              this.errMsg = "세금 가져오기 실패";
+              this.errMsg = res.data.message;
               this.error = true;
             }
         }).catch((error => {
