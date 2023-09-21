@@ -15,6 +15,8 @@ export default {
     return{
       loading: false,
       success: false,
+      error: false,
+      errMsg: "",
       popupErrMsg: "",
       overlay: false,
       company_store:[],
@@ -94,7 +96,6 @@ export default {
     },
 
     setSelectBox(){
-      try{
         //회사 selectBox
         this.axios.post("/api/v1/hr/getCompanyList", {
             headers: {
@@ -108,7 +109,11 @@ export default {
             }else {
                 console.log("getCompanyList Fail");
             }
-        });
+        }).catch((error => {
+            console.log(error);
+            this.errMsg = error.message;
+            this.error = true;
+        }));
 
         //사업장 selectBox
         this.axios.post("/api/v1/hr/getBusinessList", {
@@ -123,10 +128,11 @@ export default {
             }else {
                 console.log("getBusinessList Fail");
             }
-        });
-      }catch(err){
-          console.log(err.message);
-      }
+        }).catch((error => {
+            console.log(error);
+            this.errMsg = error.message;
+            this.error = true;
+        }));
     },
 
     setDateFormat(){
@@ -145,7 +151,6 @@ export default {
         yyyymm: this.search.yyyymm
       };
 
-      try{
         this.loading = true;
         this.axios.post("/api/v1/hr/getAdtList", sendData, {
             headers: {
@@ -160,10 +165,13 @@ export default {
               console.log("getAdtGrid Fail");
               this.loading = false;
             }
-        });
-      }catch(err){
-          console.log(err.message);
-      }
+        }).catch((error => {
+            this.loading = false;
+            console.log(error);
+            this.errMsg = error.message;
+            this.error = true;
+        }));
+
     },
 
     chkDocumentIO(value){
@@ -222,7 +230,7 @@ export default {
         frm.append('file01', file01);
         frm.append('file02', file02);
         frm.append('yyyymm', this.search.yyyymm);
-        try{
+
           this.loading = true;
           this.axios.post(encodeURI("/api/v1/hr/uploadADTExcel/"), frm, {
             headers: {
@@ -243,11 +251,11 @@ export default {
               this.popupErrMsg = res.data.message;
               this.loading = false;
             }
-          });
-        } catch(err){
-          this.popupErrMsg = "Uploade Fail"
-        }
-
+          }).catch((error => {
+              this.loading = false;
+              console.log(error);
+              this.popupErrMsg = error.message;
+          }));
       }else{
         this.popupErrMsg = '업로드중 오류가 발생하였습니다.';
       }
@@ -267,26 +275,27 @@ export default {
         estId: this.search.business.value,
         yyyymm: this.search.yyyymm
       };
-      try{
-        this.loading = true;
-        this.axios.post("/api/v1/hr/erpiu/getDataErpIU", sendData, {
-            headers: {
-                "Content-type": "application/json",
-            },
-        })
-        .then((res) => {
-            if(res.data.success){
-              this.loading = false;
-              this.success = true;
-              this.getSearchList();
-            }else {
-              console.log("getAdtGrid Fail");
-              this.loading = false;
-            }
-        });
-      }catch(err){
-          console.log(err.message);
-      }
+      this.loading = true;
+      this.axios.post("/api/v1/hr/erpiu/getDataErpIU", sendData, {
+          headers: {
+              "Content-type": "application/json",
+          },
+      })
+      .then((res) => {
+          if(res.data.success){
+            this.loading = false;
+            this.success = true;
+            this.getSearchList();
+          }else {
+            console.log("getAdtGrid Fail");
+            this.loading = false;
+          }
+      }).catch((error => {
+          this.loading = false;
+          console.log(error);
+          this.errMsg = error.message;
+          this.error = true;
+      }));
     },
   }
 }
@@ -313,6 +322,13 @@ export default {
       v-model="success"
       >
       <v-alert color="primary" text="작업 완료되었습니다." >
+      </v-alert>
+    </v-overlay>
+    <v-overlay
+      class="align-center justify-center"
+      v-model="error"
+      >
+      <v-alert color="error" :text= errMsg >
       </v-alert>
     </v-overlay>
       <div class="d-flex align-center mb-7">

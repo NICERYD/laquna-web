@@ -13,7 +13,9 @@ export default {
     data() {
         return{
             dialog: false,
+            error: false,
             errMsg: "",
+            slaveErrMsg: "",
             popupErrMsg: "",
             popupTitle: "",
             popupflag: "",
@@ -121,24 +123,24 @@ export default {
     methods: {
 
         setSelectBox(){
-            try{
-                //모듈 selectBox
-                this.axios.post("/api/v1/common/getCommonModuleList", {
-                    headers: {
-                        "Content-type": "application/json",
-                    },
-                })
-                .then((res) => {
-                    if(res.data.success){
-                    this.module_store = res.data.data;
-                    this.search.module = this.module_store[0];
-                    }else {
-                        console.log("getCompanyList Fail");
-                    }
-                });
-            }catch(err){
-                console.log(err.message);
-            }
+            //모듈 selectBox
+            this.axios.post("/api/v1/common/getCommonModuleList", {
+                headers: {
+                    "Content-type": "application/json",
+                },
+            })
+            .then((res) => {
+                if(res.data.success){
+                this.module_store = res.data.data;
+                this.search.module = this.module_store[0];
+                }else {
+                    console.log("getCompanyList Fail");
+                }
+            }).catch((error => {
+                console.log(error);
+                this.errMsg = error.message;
+                this.error = true;
+            }));
         },
 
         onMasterGridReady(params){
@@ -178,23 +180,23 @@ export default {
         },
 
         getMasterGrid(){
-            try{
-                this.axios.post("/api/v1/common/getcodelist", {
-                    headers: {
-                        "Content-type": "application/json",
-                    },
-                })
-                .then((res) => {
-                    if(res.data.success){
-                        this.fnd_code.rowData = res.data.data;
-                        this.getDetailGrid();
-                    }else {
-                        console.log("fnd_code Grid Fail");
-                    }
-                });
-            }catch(err){
-                console.log(err.message);
-            }
+            this.axios.post("/api/v1/common/getcodelist", {
+                headers: {
+                    "Content-type": "application/json",
+                },
+            })
+            .then((res) => {
+                if(res.data.success){
+                    this.fnd_code.rowData = res.data.data;
+                    this.getDetailGrid();
+                }else {
+                    console.log("fnd_code Grid Fail");
+                }
+            }).catch((error => {
+                console.log(error);
+                this.errMsg = error.message;
+                this.error = true;
+            }));
         },
 
         getDetailGrid(){
@@ -209,23 +211,23 @@ export default {
             }
             
             if(param.codeId){
-                try{
-                    this.axios.post("/api/v1/common/getcodeDetaillist", param, {
-                        headers: {
-                            "Content-type": "application/json",
-                        },
-                    })
-                    .then((res) => {
-                        if(res.data.success){
-                            this.fnd_code_detail_sys.rowData = res.data.data.codeDetailListSys;
-                            this.fnd_code_detail_com.rowData = res.data.data.codeDetailListCom;
-                        }else {
-                            console.log("fnd_code_detail Grid Fail");
-                    }
-                });
-            }catch(err){
-                console.log(err.message);
-            }
+                this.axios.post("/api/v1/common/getcodeDetaillist", param, {
+                    headers: {
+                        "Content-type": "application/json",
+                    },
+                })
+                .then((res) => {
+                    if(res.data.success){
+                        this.fnd_code_detail_sys.rowData = res.data.data.codeDetailListSys;
+                        this.fnd_code_detail_com.rowData = res.data.data.codeDetailListCom;
+                    }else {
+                        console.log("fnd_code_detail Grid Fail");
+                }
+                }).catch((error => {
+                    console.log(error);
+                    this.errMsg = error.message;
+                    this.error = true;
+                }));
             }else{
                 console.log("codeId is null");
             }
@@ -235,30 +237,31 @@ export default {
         getSearchList(){
             this.fnd_code.rowData = [];
             this.search.moduleId = this.search.module.moduleId;
-            try{
-                this.axios.post(" /api/v1/common/getCommonCodelistSearch", this.search, {
-                    headers: {
-                        "Content-type": "application/json",
-                    },
-                })
-                .then((res) => {
-                    if(res.data.success){
-                        this.fnd_code.rowData = res.data.data;
-                        this.fnd_code_detail_sys.rowData = [];
-                        this.fnd_code_detail_com.rowData = [];
+            
+            this.axios.post(" /api/v1/common/getCommonCodelistSearch", this.search, {
+                headers: {
+                    "Content-type": "application/json",
+                },
+            })
+            .then((res) => {
+                if(res.data.success){
+                    this.fnd_code.rowData = res.data.data;
+                    this.fnd_code_detail_sys.rowData = [];
+                    this.fnd_code_detail_com.rowData = [];
 
-                        // this.getDetailGrid();
-                    }else {
-                        console.log("getSearchList Fail");
-                    }
-                });
-            }catch(err){
-                console.log(err.message);
-            }
+                    // this.getDetailGrid();
+                }else {
+                    console.log("getSearchList Fail");
+                }
+            }).catch((error => {
+                console.log(error);
+                this.errMsg = error.message;
+                this.error = true;
+            }));
         },
 
         openPopup(param){
-            this.errMsg = "";
+            this.slaveErrMsg = "";
 
             if(!this.selectedRow){
                 this.selectedRow = this.fnd_code.rowData[0];
@@ -266,8 +269,9 @@ export default {
 
             //추가 버튼
             if(param == 'add'){
-                this.popupflag = 'add';
-                this.formData = {
+                try{
+                    this.popupflag = 'add';
+                    this.formData = {
                         codeDetailId: "",
                         codeId: this.selectedRow.codeId,
                         definedCd: "",
@@ -277,13 +281,19 @@ export default {
                         value01: "",
                         value02: "",
                         value03: "",
-                };
+                    };
 
-                if(this.detailSelectedRow != null){
-                    this.fnd_code_detail_com.gridApi.deselectAll();
-                }
-                this.popupTitle = '코드 추가';
-                this.dialog = true;
+                    if(this.detailSelectedRow != null){
+                        this.fnd_code_detail_com.gridApi.deselectAll();
+                    }
+                    this.popupTitle = '코드 추가';
+                    this.dialog = true;
+                }catch(error){
+                    console.log(error);
+                    this.errMsg = error.message;
+                    this.error = true;
+                };
+                
             }
             //수정 버튼
             else if(param == 'modify'){
@@ -293,7 +303,7 @@ export default {
                     this.popupTitle = '코드 수정';
                     this.dialog = true;
                 }else{
-                    this.errMsg = "수정할 코드를 선택해주세요.";
+                    this.slaveErrMsg = "수정할 코드를 선택해주세요.";
                 }
                 
             }
@@ -315,54 +325,51 @@ export default {
 
         addCodeDetailCom(){
             if(this.formValidation(this.formData)){
-                try{
-                    this.axios.post(" /api/v1/common/codeDetailComAdd", this.formData, {
-                        headers: {
-                            "Content-type": "application/json",
-                        },
-                    })
-                    .then((res) => {
-                        if(res.data.success){
-                            this.getDetailGrid();
-                            this.dialog = false;
-                        }else {
-                            this.popupErrMsg = res.data.message;
-                            console.log("addCodeDetailCom Fail");
-                        }
-                    });
-                }catch(err){
-                    this.popupErrMsg = err.message;
-                }
+                this.axios.post(" /api/v1/common/codeDetailComAdd", this.formData, {
+                    headers: {
+                        "Content-type": "application/json",
+                    },
+                })
+                .then((res) => {
+                    if(res.data.success){
+                        this.getDetailGrid();
+                        this.dialog = false;
+                    }else {
+                        this.popupErrMsg = res.data.message;
+                        console.log("addCodeDetailCom Fail");
+                    }
+                }).catch((error => {
+                    console.log(error);
+                    this.popupErrMsg = error.message;
+                }));
             }
         },
 
         updateCodeDetailCom(){
             if(this.formValidation(this.formData)){
-                try{
-                    this.axios.post(" /api/v1/common/codeDetailComUpdate", this.formData, {
-                        headers: {
-                            "Content-type": "application/json",
-                        },
-                    })
-                    .then((res) => {
-                        if(res.data.success){
-                            this.getDetailGrid();
-                            this.dialog = false;
-                        }else {
-                            this.popupErrMsg = res.data.message;
-                            console.log("updateCodeDetailCom Fail");
-                        }
-                    });
-                }catch(err){
-                    this.popupErrMsg = err.message;
-                }
+                this.axios.post(" /api/v1/common/codeDetailComUpdate", this.formData, {
+                    headers: {
+                        "Content-type": "application/json",
+                    },
+                })
+                .then((res) => {
+                    if(res.data.success){
+                        this.getDetailGrid();
+                        this.dialog = false;
+                    }else {
+                        this.popupErrMsg = res.data.message;
+                        console.log("updateCodeDetailCom Fail");
+                    }
+                }).catch((error => {
+                    console.log(error);
+                    this.popupErrMsg = error.message;
+                }));
             }
         },
 
         deleteCodeDetailCom(){
             if(this.detailSelectedRow != null){
                 this.formData = this.detailSelectedRow;
-                try{
                     this.axios.post("/api/v1/common/codeDetailComDelete", this.formData, {
                         headers: {
                             "Content-type": "application/json",
@@ -374,12 +381,12 @@ export default {
                         }else {
                             console.log("deleteCodeDetailCom Fail");
                         }
-                    });
-                }catch(err){
-                    console.log(err.message);
-                }
+                    }).catch((error => {
+                    console.log(error);
+                    this.slaveErrMsg = error.message;
+                    }));
             }else{
-                this.errMsg = "삭제할 코드를 선택해주세요.";
+                this.slaveErrMsg = "삭제할 코드를 선택해주세요.";
             }
         },
 
@@ -389,6 +396,13 @@ export default {
 </script>
 <template>
     <v-container>
+        <v-overlay
+            class="align-center justify-center"
+            v-model="error"
+            >
+            <v-alert color="error" :text= errMsg >
+            </v-alert>
+        </v-overlay>
         <div class="d-flex align-center mb-7">
             <div class="bg-primary-lighten-5 px-3 py-2 rounded me-3 d-inline-block">
                 <i class="tio- text-primary text-20">shopping</i>
@@ -495,7 +509,7 @@ export default {
                     </v-col>
                 </v-row> -->
                 <v-row class="mx-5 py-1">
-                    <v-alert v-if="errMsg"
+                    <v-alert v-if="slaveErrMsg"
                         color="error"
                         theme="dark"
                         border="start"
@@ -503,7 +517,7 @@ export default {
                         class="mw-700 mx-auto"
                     >
                         <i class="tio- text-18 me-2"> error_outlined </i>
-                        {{ errMsg }}
+                        {{ slaveErrMsg }}
                     </v-alert>
                     <!--fnd_code_detail table COM-->
                     <ag-grid-vue

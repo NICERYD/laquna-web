@@ -141,7 +141,6 @@ export default {
     },
 
     setSelectBox(){
-      try{
         //회사 selectBox
         this.axios.post("/api/v1/hr/getCompanyList", {
             headers: {
@@ -155,7 +154,11 @@ export default {
             }else {
                 console.log("getCompanyList Fail");
             }
-        });
+        }).catch((error => {
+            console.log(error);
+            this.errMsg = error.message;
+            this.error = true;
+        }));
 
         //사업장 selectBox
         this.axios.post("/api/v1/hr/getBusinessList", {
@@ -170,10 +173,11 @@ export default {
             }else {
                 console.log("getBusinessList Fail");
             }
-        });
-      }catch(err){
-          console.log(err.message);
-      }
+        }).catch((error => {
+            console.log(error);
+            this.errMsg = error.message;
+            this.error = true;
+        }));
     },
 
     setDateFormat(){
@@ -191,7 +195,7 @@ export default {
         estId: this.search.business.value,
         yyyymm: this.search.yyyymm
       };
-      try{
+
         this.loading = true;
         this.axios.post("/api/v1/hr/erpiu/getBasicSalaryData", sendData, {
             headers: {
@@ -210,10 +214,12 @@ export default {
               this.errMsg = "급여항목가져오기 실패";
               this.error = true;
             }
-        });
-      }catch(err){
-          console.log(err.message);
-      }
+        }).catch((error => {
+            this.loading = false;
+            console.log(error);
+            this.errMsg = error.message;
+            this.error = true;
+        }));
     },
 
     getSearchList(){
@@ -224,7 +230,7 @@ export default {
         yyyymm: this.search.yyyymm,
         koreanName: this.search.koreanName
       };
-      try{
+
         this.loading = true;
         this.axios.post("/api/v1/hr/getCalcSalaryList", sendData, {
             headers: {
@@ -241,10 +247,13 @@ export default {
               this.errMsg = "조회결과 불러오기 실패";
               this.error = true;
             }
-        });
-      }catch(err){
-          console.log(err.message);
-      }
+        }).catch((error => {
+            this.loading = false;
+            console.log(error);
+            this.errMsg = error.message;
+            this.error = true;
+        }));
+
     },
 
     onCellValueChanged(params){
@@ -264,7 +273,6 @@ export default {
     },
 
     onClickSaveBtn(){
-      try{
         this.loading = true;
         this.axios.post("/api/v1/hr/updateSalaryList", this.editedRows, {
             headers: {
@@ -281,10 +289,13 @@ export default {
             this.errMsg = "저장 실패";
             this.error = true;
           }
-        });
-      }catch(err){
-          console.log(err.message);
-      }
+        }).catch((error => {
+            this.loading = false;
+            console.log(error);
+            this.errMsg = error.message;
+            this.error = true;
+        }));
+
     },
 
     calcSalary(){
@@ -294,7 +305,7 @@ export default {
         estId: this.search.business.value,
         yyyymm: this.search.yyyymm
       };
-      try{
+
         this.loading = true;
         this.axios.post("/api/v1/hr/calcSalary", sendData, {
             headers: {
@@ -312,10 +323,12 @@ export default {
               this.errMsg = "급여계산 실패";
               this.error = true;
             }
-        });
-      }catch(err){
-          console.log(err.message);
-      }
+        }).catch((error => {
+            this.loading = false;
+            console.log(error);
+            this.errMsg = error.message;
+            this.error = true;
+        }));
     },
 
     formValidation(value){
@@ -338,7 +351,7 @@ export default {
         var frm = new FormData();
         frm.append('file', uploadFile);
         frm.append('yyyymm', this.search.yyyymm);
-        try{
+
           this.loading = true;
           this.axios.post(encodeURI("/api/v1/hr/uploadOtherAllowance/"), frm, {
             headers: {
@@ -360,10 +373,12 @@ export default {
               this.popupErrMsg = res.data.message;
               this.loading = false;
             }
-          });
-        }catch(err){
-          this.popupErrMsg = "Uploade Fail"
-        }
+          }).catch((error => {
+            this.loading = false;
+            console.log(error);
+            this.errMsg = error.message;
+            this.error = true;
+        }));
       }else{
         this.popupErrMsg = '업로드중 오류가 발생하였습니다.';
       }
@@ -376,7 +391,7 @@ export default {
         companyId: this.search.company.value,
         yyyymm: this.search.yyyymm
       };
-      try{
+
         this.loading = true;
         this.axios.post("/api/v1/hr/erpiu/getTaxErpIU", sendData, {
             headers: {
@@ -394,10 +409,13 @@ export default {
               this.errMsg = "세금 가져오기 실패";
               this.error = true;
             }
-        });
-      }catch(err){
-          console.log(err.message);
-      }
+        }).catch((error => {
+            this.loading = false;
+            console.log(error);
+            this.errMsg = error.message;
+            this.error = true;
+        }));
+
     },
 
     downloadReport(reportType){
@@ -414,7 +432,7 @@ export default {
           reportType: reportType,
           sort: this.search.sort.value,
         };
-        try{
+
           this.loading = true;
           this.axios.post("/api/v1/hr/downloadReport", sendData, {
               headers: {
@@ -438,14 +456,12 @@ export default {
                 this.loading = false;
                 this.successMsg = "엑셀 다운로드 완료";
                 this.success = true;
-          }
-          );
-        }catch(err){
+          }).catch((error => {
             this.loading = false;
-            this.errMsg = "엑셀 다운로드 실패";
+            console.log(error);
+            this.errMsg = error.message;
             this.error = true;
-            console.log(err.message);
-        }
+        }));
       }
       
     },
@@ -498,7 +514,6 @@ export default {
           employeeNumberList: employeeNumberList
         };
 
-        try{
           this.loading = true;
           this.axios.post("/api/v1/hr/testLocalMail", sendData, {
               headers: {
@@ -508,10 +523,12 @@ export default {
           .then((res) => {
             console.log(res);
             this.loading = false;
-          });
-        }catch(err){
-            console.log(err.message);
-        }
+          }).catch((error => {
+            this.loading = false;
+            console.log(error);
+            this.errMsg = error.message;
+            this.error = true;
+        }));    
 
       }else{
         this.error = true;
