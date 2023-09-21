@@ -518,7 +518,7 @@ export default {
         };
 
           this.loading = true;
-          this.axios.post("/api/v1/hr/testLocalMail", sendData, {
+          this.axios.post("/api/v1/hr/sendPayStubMailDH", sendData, {
               headers: {
                   "Content-type": "application/json",
               },
