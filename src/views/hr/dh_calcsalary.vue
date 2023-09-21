@@ -444,21 +444,28 @@ export default {
               responseType: "blob",
           })
           .then((res) => {
-                const name = res.headers["content-disposition"]
-                .split("filename=")[1]
-                .replace(/"/g, "");
-                const url = window.URL.createObjectURL(new Blob([res.data]));
-                const link = document.createElement("a");
-                link.href = url;
-                link.setAttribute("download", name);
-                link.style.cssText = "display:none";
-                document.body.appendChild(link);
-                link.click();
-                link.remove();
+            debugger;
+            if(res.data.size == 0) {
+              this.loading = false;
+              this.errMsg = "다운로드 중 오류가 발생했습니다."
+              this.error = true;
+            }else {
+              const name = res.headers["content-disposition"]
+              .split("filename=")[1]
+              .replace(/"/g, "");
+              const url = window.URL.createObjectURL(new Blob([res.data]));
+              const link = document.createElement("a");
+              link.href = url;
+              link.setAttribute("download", name);
+              link.style.cssText = "display:none";
+              document.body.appendChild(link);
+              link.click();
+              link.remove();
 
-                this.loading = false;
-                this.successMsg = "엑셀 다운로드 완료";
-                this.success = true;
+              this.loading = false;
+              this.successMsg = "엑셀 다운로드 완료";
+              this.success = true;
+            }
           }).catch((error => {
             this.loading = false;
             console.log(error);
