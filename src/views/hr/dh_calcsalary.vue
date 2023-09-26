@@ -444,7 +444,6 @@ export default {
               responseType: "blob",
           })
           .then((res) => {
-            debugger;
             if(res.data.size == 0) {
               this.loading = false;
               this.errMsg = "다운로드 중 오류가 발생했습니다."

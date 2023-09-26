@@ -262,9 +262,10 @@ export default {
               this.loading = false;
               this.popupErrMsg = error.message;
           }));
-      }else{
-        this.popupErrMsg = '업로드중 오류가 발생하였습니다.';
       }
+      // else{
+      //   this.popupErrMsg = '업로드중 오류가 발생하였습니다.';
+      // }
     },
 
     closePopup(){
