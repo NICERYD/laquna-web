@@ -292,7 +292,7 @@ export default {
           if(res.data.success){
             this.loading = false;
             this.success = true;
-            this.getSearchList();
+            this.adt.rowData = [];
           }else {
             this.loading = false;
             this.errMsg = res.data.message;
