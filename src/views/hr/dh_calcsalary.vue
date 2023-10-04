@@ -22,7 +22,7 @@ export default {
       file: null,
       company_store:[],
       business_store:[],
-      payrollSort:[{value:"All", name:"개인별"},{value:"Est", name:"지사별"}],
+      payrollSort:[{value:"Est", name:"지사별"}, {value:"All", name:"개인별"}],
       sort:[{value:"Salary", name:"급여"}, {value:"Bonus", name:"상여"}],
       search: {
         company: "",
@@ -185,6 +185,9 @@ export default {
 
         //급여,상여 구분 selectBox
         this.search.sort = this.sort[0];
+
+        //레포트 분류 selectBox
+        this.search.payrollSort = this.payrollSort[0];
     },
 
     setDateFormat(){
