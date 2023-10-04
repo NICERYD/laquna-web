@@ -23,6 +23,7 @@ export default {
       company_store:[],
       business_store:[],
       payrollSort:[{value:"All", name:"개인별"},{value:"Est", name:"지사별"}],
+      sort:[{value:"Salary", name:"급여"}, {value:"Bonus", name:"상여"}],
       search: {
         company: "",
         business: "",
@@ -32,7 +33,8 @@ export default {
           year: new Date().getFullYear(),
         },
         koreanName: "",
-        sort: "",
+        payrollSort: "",
+        sort:"",
       },
       dateformat: '',
       pay_calculate: {
@@ -180,6 +182,9 @@ export default {
             this.errMsg = error.message;
             this.error = true;
         }));
+
+        //급여,상여 구분 selectBox
+        this.search.sort = this.sort[0];
     },
 
     setDateFormat(){
@@ -190,39 +195,39 @@ export default {
       }
     },
 
-    getBasicSalaryData(){
-      this.setDateFormat();
-      let sendData = {
-        companyId: this.search.company.value,
-        estId: this.search.business.value,
-        yyyymm: this.search.yyyymm
-      };
+    // getBasicSalaryData(){
+    //   this.setDateFormat();
+    //   let sendData = {
+    //     companyId: this.search.company.value,
+    //     estId: this.search.business.value,
+    //     yyyymm: this.search.yyyymm
+    //   };
 
-        this.loading = true;
-        this.axios.post("/api/v1/hr/erpiu/getBasicSalaryData", sendData, {
-            headers: {
-                "Content-type": "application/json",
-            },
-        })
-        .then((res) => {
-            if(res.data.success){
-              this.loading = false;
-              this.successMsg = "급여항목가져오기 완료";
-              this.success = true;
-              console.log(res.data.message);
-            }else {
-              console.log(res.data.message);
-              this.loading = false;
-              this.errMsg = res.data.message;
-              this.error = true;
-            }
-        }).catch((error => {
-            this.loading = false;
-            console.log(error);
-            this.errMsg = error.message;
-            this.error = true;
-        }));
-    },
+    //     this.loading = true;
+    //     this.axios.post("/api/v1/hr/erpiu/getBasicSalaryData", sendData, {
+    //         headers: {
+    //             "Content-type": "application/json",
+    //         },
+    //     })
+    //     .then((res) => {
+    //         if(res.data.success){
+    //           this.loading = false;
+    //           this.successMsg = "급여항목가져오기 완료";
+    //           this.success = true;
+    //           console.log(res.data.message);
+    //         }else {
+    //           console.log(res.data.message);
+    //           this.loading = false;
+    //           this.errMsg = res.data.message;
+    //           this.error = true;
+    //         }
+    //     }).catch((error => {
+    //         this.loading = false;
+    //         console.log(error);
+    //         this.errMsg = error.message;
+    //         this.error = true;
+    //     }));
+    // },
 
     getSearchList(){
       this.setDateFormat();
@@ -230,7 +235,8 @@ export default {
         companyId: this.search.company.value,
         estId: this.search.business.value,
         yyyymm: this.search.yyyymm,
-        koreanName: this.search.koreanName
+        koreanName: this.search.koreanName,
+        sort: this.search.sort.value
       };
 
         this.loading = true;
@@ -423,7 +429,7 @@ export default {
 
     downloadReport(reportType){
       
-      if(reportType=="Payroll" && this.search.sort == ""){
+      if(reportType=="Payroll" && this.search.payrollSort == ""){
         this.errMsg = "급여대장 분류를 선택해주세요.";
         this.error = true;
       }else{
@@ -433,7 +439,8 @@ export default {
           estId: this.search.business.value,
           yyyymm: this.search.yyyymm,
           reportType: reportType,
-          sort: this.search.sort.value,
+          payrollSort: this.search.payrollSort.value,
+          sort: this.search.sort.value
         };
 
           this.loading = true;
@@ -646,6 +653,19 @@ export default {
                 @keyup.enter="getSearchList"
             ></v-text-field>
           </v-col>
+          <v-col cols="3">
+            <v-select
+              class="mw-200 px-3"
+              label="구분"
+              variant="outlined"
+              :items="sort"
+              item-title="name"
+              item-value="value"
+              v-model="search.sort"
+              return-object
+              hide-details="">
+            </v-select>
+          </v-col>
         </v-row>
       </v-col>
     </v-row>
@@ -766,7 +786,7 @@ export default {
             :items="payrollSort"
             item-title="name"
             item-value="value"
-            v-model="search.sort"
+            v-model="search.payrollSort"
             return-object
             hide-details=""
             density="compact">
