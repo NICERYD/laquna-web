@@ -282,28 +282,35 @@ export default {
 
     onClickSaveBtn(){
         this.loading = true;
-        this.axios.post("/api/v1/hr/updateSalaryList", this.editedRows, {
+        if(this.editedRows.length != 0){
+          this.axios.post("/api/v1/hr/updateSalaryList", this.editedRows, {
             headers: {
                 "Content-type": "application/json",
             },
-        }).then((res) => {
-          if(res.data.success){
+          }).then((res) => {
+            if(res.data.success){
+              this.loading = false;
+              this.successMsg = "저장 완료";
+              this.success = true;
+              this.getSearchList();
+            }else {
+              console.log(res.data.message);
+              this.loading = false;
+              this.errMsg = res.data.message;
+              this.error = true;
+            }
+          }).catch((error => {
+              this.loading = false;
+              console.log(error);
+              this.errMsg = error.message;
+              this.error = true;
+          }));
+        }else if(this.editedRows.length == 0){
             this.loading = false;
-            this.successMsg = "저장 완료";
-            this.success = true;
-            this.getSearchList();
-          }else {
-            console.log(res.data.message);
-            this.loading = false;
-            this.errMsg = res.data.message;
+            this.errMsg = "수정할 항목이 없습니다.";
             this.error = true;
-          }
-        }).catch((error => {
-            this.loading = false;
-            console.log(error);
-            this.errMsg = error.message;
-            this.error = true;
-        }));
+        }
+        
 
     },
 
