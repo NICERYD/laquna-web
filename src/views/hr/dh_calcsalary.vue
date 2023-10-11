@@ -61,7 +61,7 @@ export default {
             {
               headerName: '수당',
               children: [
-                { headerName: "기본급", field: "basicSalary", editable: false, valueFormatter:'Number(value).toLocaleString()', type:'numericColumn'},
+                { headerName: "기본급", field: "basicSalary", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn'},
                 { headerName: "연차수당", field: "annualAllowance", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn' },
                 { headerName: "연장수당1", field: "overtimeAllowance01", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn'},
                 { headerName: "연장수당2", field: "overtimeAllowance02", valueFormatter:'Number(value).toLocaleString()', type:'numericColumn' },
