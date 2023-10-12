@@ -2,12 +2,10 @@
 import { AgGridVue } from "ag-grid-vue3";
 import "ag-grid-community/styles//ag-grid.css";
 import "ag-grid-community/styles//ag-theme-balham.css";
-import PopupSearch from "../../components/layout/PopupSearch.vue";
 
 export default {
     components: {
         AgGridVue,
-        PopupSearch,
     },
 
     data() {
@@ -434,13 +432,6 @@ export default {
                     return-object
                     hide-details="">
                 </v-select>
-                <!-- <PopupSearch 
-                    v-model="search.module" 
-                    v-on:update:searchTerm="setModule" 
-                    :searchTerm="search.module" 
-                    v-on:update:searchTermId="setModuleId" 
-                    :searchTermId="search.moduleId"  
-                /> -->
             </v-col>
             <v-col cols="5">
                 <v-text-field

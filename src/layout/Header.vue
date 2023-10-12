@@ -182,6 +182,7 @@ const searchShow = false;
         > -->
 
         <!--help btn-->
+        <!--
         <v-menu offset-y>
           <template v-slot:activator="{ props }">
             <v-btn
@@ -209,7 +210,7 @@ const searchShow = false;
               </v-col>
             </v-row>
 
-            <!-- <v-tabs grow color="primary">
+            <v-tabs grow color="primary">
               <v-tab class="text-13 text-capitalize">Messages(2)</v-tab>
               <v-tab class="text-13 text-capitalize">Archive</v-tab>
             </v-tabs>
@@ -221,11 +222,12 @@ const searchShow = false;
               <template v-slot:subtitle="{ subtitle }">
                 <div v-html="subtitle"></div>
               </template>
-            </v-list> -->
+            </v-list>
             <v-divider></v-divider>
             <v-btn flat block="" class="text-primary text-13">확인</v-btn>
           </div>
-        </v-menu>
+        </v-menu> 
+      -->
         <!-- menus as a profile  -->
 
         <!--user btn-->
