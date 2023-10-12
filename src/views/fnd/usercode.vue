@@ -156,7 +156,7 @@ export default {
             params.api.forEachNode(function (node){
                 allNodes.push(node);
             })
-            allNodes[0].setSelected(true);
+            allNodes[0].setSelected(true);  //첫번째 node setSelected 설정
         },
 
         onDetailGridReady(params){
@@ -180,6 +180,7 @@ export default {
             return this.detailSelectedRow = selectedData[0];
         },
 
+        //master grid
         getMasterGrid(){
             this.axios.post("/api/v1/common/getcodelist", {
                 headers: {
@@ -201,6 +202,7 @@ export default {
             }));
         },
 
+        //detail grid
         getDetailGrid(){
             const param = {
                 codeId: '',
@@ -220,8 +222,8 @@ export default {
                 })
                 .then((res) => {
                     if(res.data.success){
-                        this.fnd_code_detail_sys.rowData = res.data.data.codeDetailListSys;
-                        this.fnd_code_detail_com.rowData = res.data.data.codeDetailListCom;
+                        this.fnd_code_detail_sys.rowData = res.data.data.codeDetailListSys; //sys code 상단 grid
+                        this.fnd_code_detail_com.rowData = res.data.data.codeDetailListCom; //com code 하단 grid
                     }else {
                         this.errMsg = res.data.message;
                         this.error = true;
@@ -237,6 +239,7 @@ export default {
             
         },
 
+        //조회 버튼
         getSearchList(){
             this.fnd_code.rowData = [];
             this.search.moduleId = this.search.module.moduleId;
@@ -264,6 +267,7 @@ export default {
             }));
         },
 
+        //com code 추가, 수정 버튼
         openPopup(param){
             this.slaveErrMsg = "";
 
@@ -314,6 +318,7 @@ export default {
 
         },
 
+        //com code 추가,수정 팝업 내 validation
         formValidation(formData){
 
             if(!formData.definedCd){
@@ -327,6 +332,7 @@ export default {
             return false;
         },
 
+        //com code 추가
         addCodeDetailCom(){
             if(this.formValidation(this.formData)){
                 this.axios.post(" /api/v1/common/codeDetailComAdd", this.formData, {
@@ -349,6 +355,7 @@ export default {
             }
         },
 
+        //com code 수정
         updateCodeDetailCom(){
             if(this.formValidation(this.formData)){
                 this.axios.post(" /api/v1/common/codeDetailComUpdate", this.formData, {
@@ -371,6 +378,7 @@ export default {
             }
         },
 
+        //com code 삭제
         deleteCodeDetailCom(){
             if(this.detailSelectedRow != null){
                 this.formData = this.detailSelectedRow;

@@ -115,8 +115,10 @@ export default {
   },
 
   mounted(){
-    this.setSelectBox();
+    //검색 조건 default setting
+    this.setSelectBox();  
 
+    //VueDatePicker custom setting
     this.dateformat = (date) => {
       let month = date.getMonth() + 1;
       if(month < 10){
@@ -137,6 +139,8 @@ export default {
       this.email_grid.gridApi = params.api;
       this.email_grid.columnApi = params.columnApi;
       this.email_grid.gridApi.sizeColumnsToFit();
+
+      //전체 row setSelected
       this.email_grid.gridApi.forEachNode(node => {
         node.setSelected(true);
       });
@@ -190,6 +194,7 @@ export default {
         this.search.payrollSort = this.payrollSort[0];
     },
 
+    //VueDatePicker month 값 2자리로 setting
     setDateFormat(){
       if(this.search.date.month < 9){
         this.search.yyyymm = this.search.date.year + "0" + (this.search.date.month+1);
@@ -232,6 +237,7 @@ export default {
     //     }));
     // },
 
+    //조회 버튼
     getSearchList(){
       this.setDateFormat();
       let sendData = {
@@ -267,6 +273,7 @@ export default {
 
     },
 
+    //grid 값 수정시 event
     onCellValueChanged(params){
       let editedColumnId = params.data.salaryId;
       let editedColumn = params.column.colId;
@@ -283,6 +290,7 @@ export default {
       }
     },
 
+    //grid 값 수정 후 저장 버튼
     onClickSaveBtn(){
         this.loading = true;
         if(this.editedRows.length != 0){
@@ -317,6 +325,7 @@ export default {
 
     },
 
+    //급여계산 버튼
     calcSalary(){
       this.setDateFormat();
       let sendData = {
@@ -350,8 +359,8 @@ export default {
         }));
     },
 
+    //excel 업로드시 파일 validation
     formValidation(value){
-
       const allowedFileType= /(\.csv|\.xlsx|\.xls)$/i;
 
       if(!value || value.length === 0){
@@ -363,6 +372,7 @@ export default {
       return false;
     },
 
+    //연차정산,초과수당 버튼
     uploadOtherAllowance(){
       this.setDateFormat();
       if(this.formValidation(this.file)){
@@ -404,6 +414,7 @@ export default {
 
     },
 
+    //세금가져오기 버튼
     getTax(){
       this.setDateFormat();
       let sendData = {
@@ -437,6 +448,7 @@ export default {
 
     },
 
+    //하단 레포트 다운로드 버튼 4개 파라미터(reportType)으로 구분
     downloadReport(reportType){
       
       if(reportType=="Payroll" && this.search.payrollSort == ""){
@@ -492,7 +504,7 @@ export default {
       
     },
 
-
+    //이메일 전송할(selected) row 담기
     getSelectedRows() {
         let selectedNodes = this.pay_calculate.gridApi.getSelectedNodes();
         if(selectedNodes.length != 0){
@@ -505,6 +517,7 @@ export default {
         
     },
 
+    //급여 이메일전송 버튼
     openPopup(){
       if(this.getSelectedRows()){
         this.errMsg = ""
@@ -516,12 +529,15 @@ export default {
       
     },
 
+    //이메일 전송 팝업 내 close 버튼
     closePopup(){
       this.dialog = false;
       this.email_grid.rowData = [];
     },
 
+    //이메일 전송 팝업 내 send 버튼
     onClickSendBtn(){
+      //팝업 내 grid의 selected row 사번 담기
       let selectedNodes = this.email_grid.gridApi.getSelectedNodes();
       if(selectedNodes.length != 0){
         let selectedData = selectedNodes.map(node => node.data);

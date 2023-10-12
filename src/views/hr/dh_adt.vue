@@ -75,8 +75,10 @@ export default {
   },
 
   mounted(){
+    //검색 조건 default setting
     this.setSelectBox();
     
+    //VueDatePicker custom setting
     this.dateformat = (date) => {
       let month = date.getMonth() + 1;
       if(month < 10){
@@ -137,6 +139,7 @@ export default {
         }));
     },
 
+    //VueDatePicker month 값 2자리로 setting
     setDateFormat(){
       if(this.search.date.month < 9){
         this.search.yyyymm = this.search.date.year + "0" + (this.search.date.month+1);
@@ -145,6 +148,7 @@ export default {
       }
     },
 
+    //조회 버튼
     getSearchList(){
       this.setDateFormat();
       let sendData = {
@@ -183,6 +187,7 @@ export default {
 
     },
 
+    //excel 업로드시 파일 validation
     chkDocumentIO(value){
       const allowedFileType= /(\.csv|\.xlsx|\.xls)$/i;
 
@@ -226,6 +231,7 @@ export default {
       return false;
     },
 
+    //ADT업로드 팝업 내 UPLOAD 버튼
     uploadExcel(){
       this.overlay = true;
       this.setDateFormat();
@@ -268,6 +274,7 @@ export default {
       // }
     },
 
+    //ADT업로드 팝업 내 CLOSE 버튼
     closePopup(){
       this.overlay = false;
       this.popupErrMsg = null;
@@ -275,6 +282,7 @@ export default {
       this.file.documentOut = null;
     },
 
+    //사원정보(ERP IU) 버튼
     getErpIU(){
       this.setDateFormat();
       let sendData = {
